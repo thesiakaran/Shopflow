@@ -1,0 +1,6 @@
+FROM node:20-alpine
+WORKDIR /app
+COPY frontend/dist ./frontend/dist
+COPY proxy-server.js ./proxy-server.js
+EXPOSE 5173
+CMD ["node", "proxy-server.js"]
