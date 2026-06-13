@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
+              - "http://192.168.*:5173"
+              - "http://10.*:5173"
+              - "http://172.*:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth-service
+          uri: http://127.0.0.1:8081
+          predicates:
+            - Path=/api/auth/**
+        - id: product-catalog-service
+          uri: http://127.0.0.1:8082
+          predicates:
+            - Path=/api/products/**
+        - id: cart-order-service
+          uri: http://127.0.0.1:8083
+          predicates:
+            - Path=/api/cart/**, /api/orders/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+

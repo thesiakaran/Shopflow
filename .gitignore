@@ -1,0 +1,43 @@
+# ShopFlow Root .gitignore
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build and IDE outputs
+target/
+dist/
+.idea/
+.vscode/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.zip
+*.tgz
+*.tar.gz
+
+# Local environmental files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Agent/CLI directories
+.antigravitycli/
+.gemini/
+brain/
+scratch/
+
+# Local databases and service directories
+elasticsearch/
+kafka/
+
+# Temporary files
+abba.txt
+prmpt.txt
+shopflow_completion_plan.md
+shopflow_report.md

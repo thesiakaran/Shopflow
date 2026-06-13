@@ -1,0 +1,13 @@
+--update
+Checking for updates...
+The service cannot be started, either because it is disabled or because it has no enabled devices associated with it.
+
+C:\Users\admin>wsl --status
+Default Version: 2
+
+Windows Subsystem for Linux was last updated on 5/15/2026
+The Windows Subsystem for Linux kernel can be manually updated with 'wsl --update', but automatic updates cannot occur due to your system settings.
+To receive automatic kernel updates, please enable the Windows Update setting: 'Receive updates for other Microsoft products when you update Windows'.
+For more information please visit https://aka.ms/wsl2kernel.
+
+Kernel version: 5.10.16
