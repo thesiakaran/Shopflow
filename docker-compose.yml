@@ -13,6 +13,11 @@ services:
       POSTGRES_DB: ShopFlow
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ShopFlow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   mongo:
     image: mongo:6-jammy
@@ -21,6 +26,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   elasticsearch:
     image: elasticsearch:7.17.10
@@ -32,6 +42,11 @@ services:
       - ES_JAVA_OPTS=-Xms256m -Xmx512m
     volumes:
       - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -72,7 +87,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "1234"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   product-catalog-service:
     build:
@@ -91,9 +107,12 @@ services:
       MONGO_PORT: 27017
       MONGO_DB: shopflow
     depends_on:
-      - postgres
-      - mongo
-      - elasticsearch
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
   cart-order-service:
     build:
@@ -110,8 +129,10 @@ services:
       POSTGRES_PASSWORD: "1234"
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
-      - postgres
-      - kafka
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   inventory-service:
     build:
@@ -128,8 +149,10 @@ services:
       POSTGRES_PASSWORD: "1234"
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
-      - postgres
-      - kafka
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   notification-service:
     build:
@@ -141,7 +164,8 @@ services:
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
-      - kafka
+      kafka:
+        condition: service_started
 
   api-gateway:
     build:
@@ -155,9 +179,12 @@ services:
       PRODUCT_SERVICE_HOST: product-catalog-service
       CART_SERVICE_HOST: cart-order-service
     depends_on:
-      - auth-service
-      - product-catalog-service
-      - cart-order-service
+      auth-service:
+        condition: service_started
+      product-catalog-service:
+        condition: service_started
+      cart-order-service:
+        condition: service_started
 
   # ── Unified Frontend Server ─────────────────────────────────────────────────
   frontend:
@@ -168,7 +195,8 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - api-gateway
+      api-gateway:
+        condition: service_started
 
 volumes:
   postgres_data:
