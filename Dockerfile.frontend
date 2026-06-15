@@ -5,6 +5,9 @@ COPY frontend/package*.json ./frontend/
 RUN cd frontend && npm install
 COPY frontend/ ./frontend/
 RUN cd frontend && npm run build
+# Copy index.html and public assets into the dist folder manually since esbuild doesn't do it
+RUN cp frontend/index.html frontend/dist/index.html && \
+    cp -r frontend/public/* frontend/dist/ || true
 
 # Stage 2: Serve using Node proxy server
 FROM node:20-alpine
