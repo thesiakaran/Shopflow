@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 5173;
-const BACKEND_URL = 'http://127.0.0.1:8080';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8080';
 const DIST_DIR = path.join(__dirname, 'frontend', 'dist');
 
 const MIME_TYPES = {
@@ -25,14 +25,15 @@ const server = http.createServer((req, res) => {
   // 1. Proxy /api requests to the Spring Boot API Gateway
   if (req.url.startsWith('/api/')) {
     const targetUrl = new URL(req.url, BACKEND_URL);
+    const parsedTarget = new URL(BACKEND_URL);
     
     // Copy incoming headers but override the host header to match the backend target
     const headers = { ...req.headers };
-    headers.host = '127.0.0.1:8080';
+    headers.host = parsedTarget.host;
 
     const proxyReq = http.request({
-      hostname: '127.0.0.1',
-      port: 8080,
+      hostname: parsedTarget.hostname,
+      port: parsedTarget.port || (parsedTarget.protocol === 'https:' ? 443 : 80),
       path: targetUrl.pathname + targetUrl.search,
       method: req.method,
       headers: headers
