@@ -39,7 +39,7 @@ public class InventoryService {
     }
 
     private void deductStock(String productId, int quantity) {
-        Inventory inventory = inventoryRepository.findByProductId(productId)
+        Inventory inventory = inventoryRepository.findWithLockByProductId(productId)
                 .orElseGet(() -> {
                     // Auto-create stock if not exists for demo (starts with 100 items)
                     Inventory newInv = new Inventory();
