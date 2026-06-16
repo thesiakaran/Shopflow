@@ -1,0 +1,80 @@
+global:
+  namespace: "shopflow"
+  imagePullPolicy: "IfNotPresent"
+
+# Ingress Rules
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "shopflow.local"
+
+# Security Configurations
+security:
+  jwtSecret: "ShopFlowSuperSecretKey2024XYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij"
+  jwtExpiration: "86400000"
+
+# Infrastructure & Database Configurations
+postgres:
+  image: "postgres:15-alpine"
+  username: "postgres"
+  password: "1234"
+  database: "ShopFlow"
+  storageSize: "2Gi"
+
+mongo:
+  image: "mongo:6-jammy"
+  database: "shopflow"
+  storageSize: "2Gi"
+
+elasticsearch:
+  image: "elasticsearch:7.17.10"
+  storageSize: "2Gi"
+  javaOpts: "-Xms256m -Xmx512m"
+
+redis:
+  image: "redis:7-alpine"
+
+zookeeper:
+  image: "confluentinc/cp-zookeeper:7.4.0"
+  storageSize: "1Gi"
+
+kafka:
+  image: "confluentinc/cp-kafka:7.4.0"
+  storageSize: "2Gi"
+
+# Microservice Configurations
+services:
+  apiGateway:
+    image: "shopflow/api-gateway:latest"
+    replicas: 1
+    port: 8080
+
+  authService:
+    image: "shopflow/auth-service:latest"
+    replicas: 1
+    port: 8081
+
+  productCatalogService:
+    image: "shopflow/product-catalog-service:latest"
+    replicas: 1
+    port: 8082
+
+  cartOrderService:
+    image: "shopflow/cart-order-service:latest"
+    replicas: 1
+    port: 8083
+
+  inventoryService:
+    image: "shopflow/inventory-service:latest"
+    replicas: 1
+    port: 8084
+
+  notificationService:
+    image: "shopflow/notification-service:latest"
+    replicas: 1
+    port: 8085
+
+  frontend:
+    image: "shopflow/frontend:latest"
+    replicas: 1
+    port: 5173

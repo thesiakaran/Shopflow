@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopflow-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  # Database Connections
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: {{ .Values.postgres.database | quote }}
+  POSTGRES_USER: {{ .Values.postgres.username | quote }}
+  
+  MONGO_HOST: "mongo"
+  MONGO_PORT: "27017"
+  MONGO_DB: {{ .Values.mongo.database | quote }}
+  
+  ELASTICSEARCH_HOST: "elasticsearch"
+  ELASTICSEARCH_PORT: "9200"
+  
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  
+  # Kafka Configs
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  
+  # Service Discovery Hosts (internal K8s DNS)
+  AUTH_SERVICE_HOST: "auth-service"
+  PRODUCT_SERVICE_HOST: "product-catalog-service"
+  CART_SERVICE_HOST: "cart-order-service"
+  
+  # Frontend Configs
+  BACKEND_URL: "http://api-gateway:8080"

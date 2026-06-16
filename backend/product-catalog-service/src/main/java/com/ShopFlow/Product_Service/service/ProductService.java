@@ -3,6 +3,7 @@ package com.ShopFlow.Product_Service.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -37,9 +38,6 @@ public class ProductService {
     private final ElasticFashionRepository elasticFashionRepository;
     private final MongoTemplate mongoTemplate;
 
-    // Cache category listings to avoid repetitive slow distinct queries on large datasets
-    private List<String> cachedElectronicsCategories = null;
-    private List<String> cachedFashionCategories = null;
 
     // ——— Search and Paginate Electronics (PostgreSQL / Elasticsearch) ———
     public Page<ElectronicsProduct> searchElectronics(String category, String search, Pageable pageable) {
@@ -155,27 +153,25 @@ public class ProductService {
     }
 
     // ——— Fetch Distinct Electronics Categories ———
+    @Cacheable(value = "electronics-categories")
     public List<String> getElectronicsCategories() {
-        if (cachedElectronicsCategories == null) {
-            cachedElectronicsCategories = electronicsRepository.findDistinctCategories();
-        }
-        return cachedElectronicsCategories;
+        return electronicsRepository.findDistinctCategories();
     }
 
     // ——— Fetch Distinct Fashion Categories ———
+    @Cacheable(value = "fashion-categories")
     public List<String> getFashionCategories() {
-        if (cachedFashionCategories == null) {
-            cachedFashionCategories = mongoTemplate.findDistinct(new Query(), "masterCategory", FashionProduct.class, String.class);
-        }
-        return cachedFashionCategories;
+        return mongoTemplate.findDistinct(new Query(), "masterCategory", FashionProduct.class, String.class);
     }
 
     // ——— Get single electronics product by ID ———
+    @Cacheable(value = "electronics-products", key = "#id", unless = "#result == null || #result.isEmpty()")
     public Optional<ElectronicsProduct> getElectronicsById(String id) {
         return electronicsRepository.findById(id);
     }
 
     // ——— Get single fashion product by ID ———
+    @Cacheable(value = "fashion-products", key = "#id", unless = "#result == null || #result.isEmpty()")
     public Optional<FashionProduct> getFashionById(String id) {
         return fashionRepository.findById(id);
     }
