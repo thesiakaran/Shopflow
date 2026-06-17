@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -34,6 +35,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ElasticElectronicsRepository elasticElectronicsRepository;
     private final ElasticFashionRepository elasticFashionRepository;
     private final ObjectMapper objectMapper;
+    private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
     public void run(String... args) throws Exception {
@@ -68,7 +70,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 if (elecCount > 10) {
                     File elecFile = new File(dataDir, "electronics.json");
-                    // Only write if file doesn't exist to prevent overwriting updates
                     if (!elecFile.exists()) {
                         List<ElectronicsProduct> elecProducts = electronicsRepository.findAll();
                         objectMapper.writerWithDefaultPrettyPrinter().writeValue(elecFile, elecProducts);
@@ -78,7 +79,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 if (fashionCount > 10) {
                     File fashionFile = new File(dataDir, "fashion.json");
-                    // Only write if file doesn't exist to prevent overwriting updates
                     if (!fashionFile.exists()) {
                         List<FashionProduct> fashionProducts = fashionRepository.findAll();
                         objectMapper.writerWithDefaultPrettyPrinter().writeValue(fashionFile, fashionProducts);
@@ -278,6 +278,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         log.info("Starting memory-safe synchronization of databases with Elasticsearch...");
         try {
+            // Programmatically check and create indexes and mappings if needed
+            createIndexIfNeeded(ElasticElectronicsProduct.class);
+            createIndexIfNeeded(ElasticFashionProduct.class);
+
             elasticElectronicsRepository.deleteAll();
             elasticFashionRepository.deleteAll();
             log.info("Cleared existing Elasticsearch indices.");
@@ -288,6 +292,19 @@ public class DatabaseSeeder implements CommandLineRunner {
             log.info("Elasticsearch synchronization completed successfully.");
         } catch (Exception e) {
             log.error("Elasticsearch sync failed: {}", e.getMessage());
+        }
+    }
+
+    private void createIndexIfNeeded(Class<?> clazz) {
+        try {
+            var indexOps = elasticsearchOperations.indexOps(clazz);
+            if (!indexOps.exists()) {
+                indexOps.create();
+                indexOps.putMapping(indexOps.createMapping(clazz));
+                log.info("Created Elasticsearch index and mapping dynamically for class: {}", clazz.getSimpleName());
+            }
+        } catch (Exception e) {
+            log.warn("Could not check or create index for class {}: {}", clazz.getSimpleName(), e.getMessage());
         }
     }
 

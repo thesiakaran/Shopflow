@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import lombok.Data;
 
 @Data
-@Document(indexName = "fashion")
+@Document(indexName = "fashion", createIndex = false)
 public class ElasticFashionProduct {
 
     @Id
