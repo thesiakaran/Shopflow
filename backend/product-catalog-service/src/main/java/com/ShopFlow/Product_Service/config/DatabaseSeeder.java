@@ -8,14 +8,19 @@ import com.ShopFlow.Product_Service.entity.ElectronicsProduct;
 import com.ShopFlow.Product_Service.entity.FashionProduct;
 import com.ShopFlow.Product_Service.document.ElasticElectronicsProduct;
 import com.ShopFlow.Product_Service.document.ElasticFashionProduct;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,24 +33,91 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final FashionRepository fashionRepository;
     private final ElasticElectronicsRepository elasticElectronicsRepository;
     private final ElasticFashionRepository elasticFashionRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void run(String... args) throws Exception {
+        // 1. Check if we need to export from local database
+        checkAndExportData();
+
+        // 2. Seed PostgreSQL and MongoDB databases
         seedElectronics();
         seedFashion();
         cleanElectronicsCategories();
-        // Run Elasticsearch sync in a background thread so the service starts immediately
-        // and can serve products from the primary databases while ES sync completes
+
+        // 3. Run Elasticsearch sync in a background thread so the service starts immediately
         Thread syncThread = new Thread(this::syncToElasticsearch, "elasticsearch-sync-thread");
         syncThread.setDaemon(true);
         syncThread.start();
         log.info("Elasticsearch sync started in background thread. Service is ready to serve from primary databases.");
     }
 
+    private void checkAndExportData() {
+        try {
+            long elecCount = electronicsRepository.count();
+            long fashionCount = fashionRepository.count();
+
+            // If local databases are populated with large data (> 10 products), export them to JSON files
+            if (elecCount > 10 || fashionCount > 10) {
+                File dataDir = new File("src/main/resources/data");
+                if (!dataDir.exists()) {
+                    dataDir.mkdirs();
+                }
+
+                log.info("Local database contains significant data. Starting export to JSON files...");
+
+                if (elecCount > 10) {
+                    File elecFile = new File(dataDir, "electronics.json");
+                    // Only write if file doesn't exist to prevent overwriting updates
+                    if (!elecFile.exists()) {
+                        List<ElectronicsProduct> elecProducts = electronicsRepository.findAll();
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(elecFile, elecProducts);
+                        log.info("Exported {} electronics products to {}", elecProducts.size(), elecFile.getAbsolutePath());
+                    }
+                }
+
+                if (fashionCount > 10) {
+                    File fashionFile = new File(dataDir, "fashion.json");
+                    // Only write if file doesn't exist to prevent overwriting updates
+                    if (!fashionFile.exists()) {
+                        List<FashionProduct> fashionProducts = fashionRepository.findAll();
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(fashionFile, fashionProducts);
+                        log.info("Exported {} fashion products to {}", fashionProducts.size(), fashionFile.getAbsolutePath());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Database export check skipped or failed (expected if running inside container): {}", e.getMessage());
+        }
+    }
+
     private void seedElectronics() {
         if (electronicsRepository.count() > 0) {
             log.info("Electronics database is already populated.");
             return;
+        }
+
+        // Try importing from JSON first
+        try {
+            Resource resource = new ClassPathResource("data/electronics.json");
+            if (resource.exists()) {
+                log.info("Loading electronics products from data/electronics.json classpath resource...");
+                List<ElectronicsProduct> products = objectMapper.readValue(
+                        resource.getInputStream(),
+                        new TypeReference<List<ElectronicsProduct>>() {}
+                );
+
+                // Batch save to PostgreSQL
+                int batchSize = 500;
+                for (int i = 0; i < products.size(); i += batchSize) {
+                    int end = Math.min(i + batchSize, products.size());
+                    electronicsRepository.saveAll(products.subList(i, end));
+                }
+                log.info("Successfully imported {} electronics products from JSON file.", products.size());
+                return;
+            }
+        } catch (Exception e) {
+            log.error("Failed to load electronics from JSON file: {}. Falling back to default seeding.", e.getMessage());
         }
 
         log.info("Seeding electronics products into PostgreSQL database...");
@@ -91,6 +163,25 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (fashionRepository.count() > 0) {
             log.info("Fashion database is already populated.");
             return;
+        }
+
+        // Try importing from JSON first
+        try {
+            Resource resource = new ClassPathResource("data/fashion.json");
+            if (resource.exists()) {
+                log.info("Loading fashion products from data/fashion.json classpath resource...");
+                List<FashionProduct> products = objectMapper.readValue(
+                        resource.getInputStream(),
+                        new TypeReference<List<FashionProduct>>() {}
+                );
+
+                // MongoDB can save large datasets efficiently
+                fashionRepository.saveAll(products);
+                log.info("Successfully imported {} fashion products from JSON file.", products.size());
+                return;
+            }
+        } catch (Exception e) {
+            log.error("Failed to load fashion from JSON file: {}. Falling back to default seeding.", e.getMessage());
         }
 
         log.info("Seeding fashion products into MongoDB database...");
@@ -183,25 +274,20 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void syncToElasticsearch() {
-        // Wait a few seconds for the app to fully start before beginning sync
         try { Thread.sleep(5000); } catch (InterruptedException ignored) { return; }
 
         log.info("Starting memory-safe synchronization of databases with Elasticsearch...");
         try {
-            // 1. Clear existing Elasticsearch indices
             elasticElectronicsRepository.deleteAll();
             elasticFashionRepository.deleteAll();
             log.info("Cleared existing Elasticsearch indices.");
 
-            // 2. Sync Electronics products in small pages from PostgreSQL
             syncElectronicsToEs();
-
-            // 3. Sync Fashion products in small pages from MongoDB
             syncFashionToEs();
 
             log.info("Elasticsearch synchronization completed successfully.");
         } catch (Exception e) {
-            log.error("Elasticsearch sync failed (service will continue serving from primary databases): {}", e.getMessage());
+            log.error("Elasticsearch sync failed: {}", e.getMessage());
         }
     }
 
@@ -238,7 +324,6 @@ public class DatabaseSeeder implements CommandLineRunner {
                 if (!page.hasNext()) break;
                 pageNum++;
 
-                // Small pause between batches to allow GC
                 Thread.sleep(100);
             }
             log.info("Synced {} electronics products to Elasticsearch.", totalSynced);
@@ -287,7 +372,6 @@ public class DatabaseSeeder implements CommandLineRunner {
                 if (!page.hasNext()) break;
                 pageNum++;
 
-                // Small pause between batches to allow GC
                 Thread.sleep(100);
             }
             log.info("Synced {} fashion products to Elasticsearch.", totalSynced);
