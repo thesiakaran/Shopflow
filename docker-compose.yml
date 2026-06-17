@@ -115,6 +115,7 @@ services:
       ELASTICSEARCH_PORT: 9200
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      CACHE_TYPE: redis
     depends_on:
       postgres:
         condition: service_healthy

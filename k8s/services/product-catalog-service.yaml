@@ -91,6 +91,11 @@ spec:
                 configMapKeyRef:
                   name: shopflow-config
                   key: REDIS_PORT
+            - name: CACHE_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: shopflow-config
+                  key: CACHE_TYPE
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
