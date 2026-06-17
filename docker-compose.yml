@@ -113,6 +113,8 @@ services:
       MONGO_DB: shopflow
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       postgres:
         condition: service_healthy
@@ -120,6 +122,8 @@ services:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   cart-order-service:
     build:

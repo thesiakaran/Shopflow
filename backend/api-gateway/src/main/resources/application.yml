@@ -15,6 +15,8 @@ spring:
               - "http://192.168.*:5173"
               - "http://10.*:5173"
               - "http://172.*:5173"
+              - "https://*.github.dev"
+              - "https://*.app.github.dev"
             allowedMethods:
               - GET
               - POST
