@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/main.jsx --bundle --outfile=dist/bundle.js --minify --sourcemap --platform=browser --jsx=automatic --define:process.env.NODE_ENV=\\\"development\\\"",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
