@@ -1,9 +1,13 @@
 import axios from 'axios';
 
 // Base Axios instance pointing to Spring Boot backend
+const isProd = import.meta.env.PROD;
 const api = axios.create({
-  baseURL: window.location.origin,
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: isProd ? 'https://violet-tactile-fructose.ngrok-free.dev' : window.location.origin,
+  headers: { 
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true' // Bypasses Ngrok warning page for API calls
+  },
 });
 
 // ── Request Interceptor ──────────────────────────────────────────────────────
