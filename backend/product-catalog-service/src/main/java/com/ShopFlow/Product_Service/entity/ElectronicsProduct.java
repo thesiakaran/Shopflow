@@ -5,11 +5,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 import lombok.Data;
 
-@Data // Lombok automatically writes your getters and setters!
+@Data
 @Entity
-@Table(name = "electronics")
+@Table(name = "electronics", indexes = {
+    @Index(name = "idx_electronics_category", columnList = "category"),
+    @Index(name = "idx_electronics_brand", columnList = "brand"),
+    @Index(name = "idx_electronics_name", columnList = "name")
+})
 public class ElectronicsProduct {
 
     @Id

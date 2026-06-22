@@ -154,7 +154,7 @@ export default function ProductsPage() {
             {tabs.map(tab => (
               <button key={tab.key} onClick={() => handleCategoryChange(tab.key)}
                 style={{
-                  padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all 0.2s',
+                  padding: '8px 16px', borderRadius: '8px', fontSize: '15px', fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all 0.2s',
                   background: category === tab.key ? 'var(--primary)' : 'transparent',
                   color: category === tab.key ? 'white' : 'var(--text-muted)',
                 }}>{tab.label}</button>
@@ -179,14 +179,14 @@ export default function ProductsPage() {
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '24px' }} className="no-scrollbar">
             <button onClick={() => handleSubCategoryChange('')}
               style={{
-                padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', border: '1px solid var(--border)', transition: 'all 0.2s',
+                padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', border: '1px solid var(--border)', transition: 'all 0.2s',
                 background: selectedSubCategory === '' ? 'var(--accent)' : 'var(--bg-surface)',
                 color: selectedSubCategory === '' ? 'white' : 'var(--text-muted)',
               }}>All Sub-categories</button>
             {(category === 'electronics' ? electronicsCategories : fashionCategories).map(catName => (
               <button key={catName} onClick={() => handleSubCategoryChange(catName)}
                 style={{
-                  padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', border: '1px solid var(--border)', transition: 'all 0.2s',
+                  padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', border: '1px solid var(--border)', transition: 'all 0.2s',
                   background: selectedSubCategory === catName ? 'var(--accent)' : 'var(--bg-surface)',
                   color: selectedSubCategory === catName ? 'white' : 'var(--text-primary)',
                 }}>{catName}</button>

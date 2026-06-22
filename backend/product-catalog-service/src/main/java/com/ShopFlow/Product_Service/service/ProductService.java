@@ -83,7 +83,7 @@ public class ProductService {
         if (category == null || category.trim().isEmpty()) {
             return electronicsRepository.findAll(pageable);
         }
-        return electronicsRepository.searchProducts(category, search, pageable);
+        return electronicsRepository.findByCategory(category.trim(), pageable);
     }
 
     // ——— Search and Paginate Fashion (MongoDB / Elasticsearch) ———
@@ -131,9 +131,9 @@ public class ProductService {
         // Fall back to standard MongoDB pagination (also handles no-search case)
         if (category == null || category.trim().isEmpty()) {
             if (search != null && !search.trim().isEmpty()) {
-                // Text search fallback using MongoDB regex on productDisplayName
+                // Text search fallback using MongoDB text index on productDisplayName, articleType, baseColour
                 Query query = new Query();
-                query.addCriteria(Criteria.where("productDisplayName").regex(search.trim(), "i"));
+                query.addCriteria(TextCriteria.forDefaultLanguage().matchingAny(search.trim()));
                 long total = mongoTemplate.count(query, FashionProduct.class);
                 query.with(pageable);
                 List<FashionProduct> products = mongoTemplate.find(query, FashionProduct.class);
@@ -142,9 +142,9 @@ public class ProductService {
             return fashionRepository.findAll(pageable);
         }
         Query query = new Query();
-        query.addCriteria(Criteria.where("masterCategory").regex("^" + category.trim() + "$", "i"));
+        query.addCriteria(Criteria.where("masterCategory").is(category.trim()));
         if (search != null && !search.trim().isEmpty()) {
-            query.addCriteria(Criteria.where("productDisplayName").regex(search.trim(), "i"));
+            query.addCriteria(TextCriteria.forDefaultLanguage().matchingAny(search.trim()));
         }
         long total = mongoTemplate.count(query, FashionProduct.class);
         query.with(pageable);
@@ -155,13 +155,13 @@ public class ProductService {
     // ——— Fetch Distinct Electronics Categories ———
     @Cacheable(value = "electronics-categories")
     public List<String> getElectronicsCategories() {
-        return electronicsRepository.findDistinctCategories();
+        return List.of("Laptops", "Smartphones", "Audio", "Cameras", "Gaming", "Accessories", "Home Appliances", "Wearables");
     }
 
     // ——— Fetch Distinct Fashion Categories ———
     @Cacheable(value = "fashion-categories")
     public List<String> getFashionCategories() {
-        return mongoTemplate.findDistinct(new Query(), "masterCategory", FashionProduct.class, String.class);
+        return List.of("Apparel", "Accessories", "Footwear", "Personal Care", "Free Items");
     }
 
     // ——— Get single electronics product by ID ———

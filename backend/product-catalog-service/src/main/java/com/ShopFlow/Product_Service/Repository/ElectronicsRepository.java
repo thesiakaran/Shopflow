@@ -14,13 +14,15 @@ import java.util.List;
 public interface ElectronicsRepository extends JpaRepository<ElectronicsProduct, String> {
 
     @Query("SELECT e FROM ElectronicsProduct e WHERE " +
-           "(:category IS NULL OR :category = '' OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
+           "(:category IS NULL OR :category = '' OR e.category = :category) AND " +
            "(:search IS NULL OR :search = '' OR LOWER(e.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(e.brand) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<ElectronicsProduct> searchProducts(
             @Param("category") String category,
             @Param("search") String search,
             Pageable pageable
     );
+
+    Page<ElectronicsProduct> findByCategory(String category, Pageable pageable);
 
     @Query("SELECT DISTINCT e.category FROM ElectronicsProduct e WHERE e.category IS NOT NULL ORDER BY e.category")
     List<String> findDistinctCategories();

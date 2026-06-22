@@ -7,7 +7,6 @@ const api = axios.create({
 });
 
 // ── Request Interceptor ──────────────────────────────────────────────────────
-// Automatically attaches JWT token to every request if user is logged in
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -20,13 +19,32 @@ api.interceptors.request.use(
 );
 
 // ── Response Interceptor ─────────────────────────────────────────────────────
-// If 401 (token expired/invalid) → clear storage and redirect to login
-// But skip for /api/auth/* endpoints — those 401s are expected business logic
-// (e.g. wrong password), not expired tokens.
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const requestUrl = error.config?.url || '';
+    
+    // MOCK DATA FALLBACK FOR VERCEL (Serverless Mode)
+    // If the backend is not running, intercept the 404/Network Error and return static JSON
+    if (!requestUrl.includes('/api/auth/')) {
+      try {
+        if (requestUrl.includes('/electronics/categories') || requestUrl.includes('/fashion/categories')) {
+          const res = await axios.get('/mock-categories.json');
+          return { data: res.data };
+        }
+        if (requestUrl.includes('/electronics')) {
+          const res = await axios.get('/mock-electronics.json');
+          return { data: res.data };
+        }
+        if (requestUrl.includes('/fashion')) {
+          const res = await axios.get('/mock-fashion.json');
+          return { data: res.data };
+        }
+      } catch (mockError) {
+        console.error("Mock fallback failed", mockError);
+      }
+    }
+
     const isAuthEndpoint = requestUrl.includes('/api/auth/');
     if (error.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('token');
