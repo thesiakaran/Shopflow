@@ -48,9 +48,9 @@ export default function CartSidebar() {
                     <p style={{ fontSize: '13px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.productName}</p>
                     <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--accent)', marginTop: '4px' }}>₹{item.price?.toLocaleString('en-IN')}</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
-                      <button className="qty-btn" onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
-                      <span style={{ fontSize: '14px', fontWeight: 600, minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                      <button className="qty-btn" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                      <button className="qty-btn" onClick={() => updateQuantity(item.id, Number(item.quantity || 1) - 1)}>−</button>
+                      <span style={{ fontSize: '14px', fontWeight: 600, minWidth: '20px', textAlign: 'center' }}>{Number(item.quantity || 1)}</span>
+                      <button className="qty-btn" onClick={() => updateQuantity(item.id, Number(item.quantity || 1) + 1)}>+</button>
                       <button onClick={() => removeItem(item.id)} style={{
                         marginLeft: 'auto', background: 'none', border: 'none',
                         color: 'var(--error)', cursor: 'pointer', fontSize: '13px', fontWeight: 500,

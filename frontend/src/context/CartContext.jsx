@@ -23,7 +23,7 @@ export function CartProvider({ children }) {
       // Mock Fallback
       const mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
       setCartItems(mockCart);
-      setCartCount(mockCart.reduce((sum, item) => sum + item.quantity, 0));
+      setCartCount(mockCart.reduce((sum, item) => sum + Number(item.quantity || 1), 0));
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ export function CartProvider({ children }) {
       // Mock Fallback
       const mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
       const existing = mockCart.find(i => i.productId === newItem.productId);
-      if (existing) { existing.quantity += 1; } else { mockCart.push(newItem); }
+      if (existing) { existing.quantity = Number(existing.quantity || 1) + 1; } else { mockCart.push(newItem); }
       localStorage.setItem('mockCart', JSON.stringify(mockCart));
       await fetchCart();
       setIsCartOpen(true);
@@ -57,13 +57,14 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = async (cartItemId, quantity) => {
+    const safeQty = Math.max(1, Number(quantity) || 1);
     try {
-      await api.put(`/api/cart/${cartItemId}`, { quantity });
+      await api.put(`/api/cart/${cartItemId}`, { quantity: safeQty });
       await fetchCart();
     } catch (err) {
       // Mock Fallback
       let mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
-      mockCart = mockCart.map(item => item.id === cartItemId ? { ...item, quantity } : item);
+      mockCart = mockCart.map(item => item.id === cartItemId ? { ...item, quantity: safeQty } : item);
       localStorage.setItem('mockCart', JSON.stringify(mockCart));
       await fetchCart();
     }
@@ -103,7 +104,7 @@ export function CartProvider({ children }) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartTotal = cartItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
 
   return (
     <CartContext.Provider value={{ cartItems, cartCount, cartTotal, loading, isCartOpen, addToCart, updateQuantity, removeItem, clearCart, openCart, closeCart, fetchCart }}>

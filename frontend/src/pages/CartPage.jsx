@@ -35,12 +35,12 @@ export default function CartPage() {
                   <p style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent)', marginTop: '8px' }}>₹{item.price?.toLocaleString('en-IN')}</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <button className="qty-btn" onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}>−</button>
-                  <span style={{ fontSize: '15px', fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>{item.quantity}</span>
-                  <button className="qty-btn" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                  <button className="qty-btn" onClick={() => updateQuantity(item.id, Number(item.quantity || 1) - 1)}>−</button>
+                  <span style={{ fontSize: '15px', fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>{Number(item.quantity || 1)}</span>
+                  <button className="qty-btn" onClick={() => updateQuantity(item.id, Number(item.quantity || 1) + 1)}>+</button>
                 </div>
                 <div style={{ textAlign: 'right', minWidth: '100px' }}>
-                  <p style={{ fontSize: '16px', fontWeight: 700 }}>₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                  <p style={{ fontSize: '16px', fontWeight: 700 }}>₹{(Number(item.price || 0) * Number(item.quantity || 1)).toLocaleString('en-IN')}</p>
                   <button onClick={() => removeItem(item.id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '13px', fontWeight: 500, marginTop: '4px' }}>Remove</button>
                 </div>
               </div>
