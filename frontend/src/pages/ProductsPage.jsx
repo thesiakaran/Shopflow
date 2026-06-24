@@ -136,6 +136,30 @@ export default function ProductsPage() {
     products.push(...fashion.map(p => ({ ...p, _category: 'fashion' })));
   }
 
+  // Client-Side Mock Filtering & Sorting
+  if (debouncedSearch) {
+    const searchLower = debouncedSearch.toLowerCase();
+    products = products.filter(p => {
+      const name = (p.name || p.productDisplayName || '').toLowerCase();
+      const brand = (p.brand || p.articleType || '').toLowerCase();
+      return name.includes(searchLower) || brand.includes(searchLower);
+    });
+  }
+
+  if (selectedSubCategory) {
+    products = products.filter(p => 
+      p.brand === selectedSubCategory || 
+      p.articleType === selectedSubCategory || 
+      p.masterCategory === selectedSubCategory
+    );
+  }
+
+  if (sortBy === 'price-low') {
+    products.sort((a, b) => (a.price || 0) - (b.price || 0));
+  } else if (sortBy === 'price-high') {
+    products.sort((a, b) => (b.price || 0) - (a.price || 0));
+  }
+
   const tabs = [
     { key: 'all', label: 'All Products' },
     { key: 'electronics', label: '⚡ Electronics' },
