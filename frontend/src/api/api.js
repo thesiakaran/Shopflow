@@ -30,37 +30,57 @@ api.interceptors.response.use(
     
     // MOCK DATA FALLBACK FOR VERCEL (Serverless Mode)
     // If the backend is not running, intercept the 404/Network Error and return static JSON
-    if (!requestUrl.includes('/api/auth/')) {
-      try {
-        if (requestUrl.includes('/electronics/categories') || requestUrl.includes('/fashion/categories')) {
-          const res = await axios.get('/mock-categories.json');
-          return { data: res.data };
-        }
-        if (requestUrl.includes('/electronics')) {
-          const res = await axios.get('/mock-electronics.json');
-          let arrayData = Array.isArray(res.data) ? res.data : (res.data?.content || []);
-          const parts = requestUrl.split('?')[0].split('/');
-          const idStr = parts[parts.length - 1];
-          if (idStr && idStr !== 'electronics' && idStr !== 'products') {
-            const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
-            return { data: product || arrayData[0] || {} };
-          }
-          return { data: res.data };
-        }
-        if (requestUrl.includes('/fashion')) {
-          const res = await axios.get('/mock-fashion.json');
-          let arrayData = Array.isArray(res.data) ? res.data : (res.data?.content || []);
-          const parts = requestUrl.split('?')[0].split('/');
-          const idStr = parts[parts.length - 1];
-          if (idStr && idStr !== 'fashion' && idStr !== 'products') {
-            const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
-            return { data: product || arrayData[0] || {} };
-          }
-          return { data: res.data };
-        }
-      } catch (mockError) {
-        console.error("Mock fallback failed", mockError);
+    try {
+      if (requestUrl.includes('/api/auth/register')) {
+        return { data: { message: "User registered successfully (Mocked)" } };
       }
+      if (requestUrl.includes('/api/auth/login')) {
+        const payload = JSON.parse(error.config.data || '{}');
+        return { 
+          data: { 
+            token: "mock-jwt-token-" + Date.now(), 
+            name: payload.email ? payload.email.split('@')[0] : 'Demo User', 
+            email: payload.email || 'demo@example.com', 
+            role: "USER", 
+            userId: "mock-user-123" 
+          } 
+        };
+      }
+      if (requestUrl.includes('/api/user/profile')) {
+        return { 
+          data: { 
+            name: 'Demo User', email: 'demo@example.com', role: 'USER', userId: 'mock-user-123' 
+          } 
+        };
+      }
+      if (requestUrl.includes('/electronics/categories') || requestUrl.includes('/fashion/categories')) {
+        const res = await axios.get('/mock-categories.json');
+        return { data: res.data };
+      }
+      if (requestUrl.includes('/electronics')) {
+        const res = await axios.get('/mock-electronics.json');
+        let arrayData = Array.isArray(res.data) ? res.data : (res.data?.content || []);
+        const parts = requestUrl.split('?')[0].split('/');
+        const idStr = parts[parts.length - 1];
+        if (idStr && idStr !== 'electronics' && idStr !== 'products') {
+          const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+          return { data: product || arrayData[0] || {} };
+        }
+        return { data: res.data };
+      }
+      if (requestUrl.includes('/fashion')) {
+        const res = await axios.get('/mock-fashion.json');
+        let arrayData = Array.isArray(res.data) ? res.data : (res.data?.content || []);
+        const parts = requestUrl.split('?')[0].split('/');
+        const idStr = parts[parts.length - 1];
+        if (idStr && idStr !== 'fashion' && idStr !== 'products') {
+          const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+          return { data: product || arrayData[0] || {} };
+        }
+        return { data: res.data };
+      }
+    } catch (mockError) {
+      console.error("Mock fallback failed", mockError);
     }
 
     const isAuthEndpoint = requestUrl.includes('/api/auth/');
