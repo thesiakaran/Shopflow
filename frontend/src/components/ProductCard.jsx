@@ -135,35 +135,35 @@ export default function ProductCard({ product, category }) {
           position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'
         }} className="animate-fadeIn" onClick={closeQuickView}>
-          <div className="card glass animate-fadeIn" onClick={e => e.stopPropagation()} style={{
-            width: '90%', maxWidth: '320px', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', maxHeight: '80vh'
+          <div className="card glass animate-slideInRight" onClick={e => e.stopPropagation()} style={{
+            width: '90%', maxWidth: '800px', display: 'flex', overflow: 'hidden', position: 'relative', maxHeight: '90vh'
           }}>
             <button onClick={closeQuickView} style={{
-              position: 'absolute', top: '8px', right: '8px', background: 'var(--bg-glass)', border: '1px solid var(--border)',
-              width: '28px', height: '28px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px'
+              position: 'absolute', top: '16px', right: '16px', background: 'var(--bg-hover)', border: 'none',
+              width: '32px', height: '32px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10
             }}>✕</button>
             
-            <div style={{ height: '180px', background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '48px' }}>📦</div>}
+            <div style={{ flex: 1, background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '64px' }}>📦</div>}
             </div>
             
-            <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
-              <span className="badge badge-info" style={{ alignSelf: 'flex-start', fontSize: '10px', padding: '2px 8px' }}>{isElectronics ? '⚡ Electronics' : '👗 Fashion'}</span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</h2>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{subtitle}</p>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent)' }}>
-                  {price != null ? `₹${price.toLocaleString('en-IN')}` : 'Price N/A'}
-                </div>
+            <div style={{ flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+              <span className="badge badge-info" style={{ alignSelf: 'flex-start' }}>{isElectronics ? '⚡ Electronics' : '👗 Fashion'}</span>
+              <h2 style={{ fontSize: '24px', fontWeight: 800 }}>{name}</h2>
+              <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{subtitle}</p>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--accent)' }}>
+                {price != null ? `₹${price.toLocaleString('en-IN')}` : 'Price N/A'}
               </div>
+              <p style={{ fontSize: '14px', color: 'var(--text-subtle)', lineHeight: 1.6 }}>
+                Experience premium quality and stunning design. This product is one of our top-rated items, ensuring you get the best value and style.
+              </p>
               
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary btn-sm" style={{ flex: 1 }}>
+              <div style={{ marginTop: 'auto', display: 'flex', gap: '12px' }}>
+                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
                   {adding ? '✓ Added' : 'Add to Cart'}
                 </button>
-                <Link to={detailPath} className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: 'center' }}>
-                  Details
+                <Link to={detailPath} className="btn btn-outline btn-lg" style={{ flex: 1, textAlign: 'center' }}>
+                  Full Details
                 </Link>
               </div>
             </div>
