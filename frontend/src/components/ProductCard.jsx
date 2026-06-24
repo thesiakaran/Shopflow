@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -129,7 +130,7 @@ export default function ProductCard({ product, category }) {
       </Link>
 
       {/* Quick View Modal */}
-      {showQuickView && (
+      {showQuickView && createPortal(
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'
@@ -167,7 +168,8 @@ export default function ProductCard({ product, category }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
