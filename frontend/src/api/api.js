@@ -53,6 +53,31 @@ api.interceptors.response.use(
           } 
         };
       }
+      if (requestUrl.includes('/api/orders/place')) {
+        const payload = JSON.parse(error.config.data || '{}');
+        const mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
+        const total = mockCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const order = {
+          id: Date.now(),
+          orderNumber: 'ORD-' + Math.floor(Math.random() * 10000000),
+          placedAt: new Date().toISOString(),
+          status: 'CONFIRMED',
+          totalAmount: total + (total < 999 ? 49 : 0),
+          paymentMethod: payload.paymentMethod || 'COD',
+          paymentStatus: payload.paymentMethod === 'CARD' ? 'PAID' : 'PENDING',
+          shippingCity: payload.shippingCity || 'City',
+          shippingState: payload.shippingState || 'State',
+          items: mockCart.map(i => ({...i, subtotal: i.price * i.quantity}))
+        };
+        const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+        mockOrders.push(order);
+        localStorage.setItem('mockOrders', JSON.stringify(mockOrders));
+        return { data: order };
+      }
+      if (requestUrl.includes('/api/orders/my-orders')) {
+        const mockOrders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+        return { data: mockOrders.reverse() };
+      }
       if (requestUrl.includes('/electronics/categories') || requestUrl.includes('/fashion/categories')) {
         const res = await axios.get('/mock-categories.json');
         return { data: res.data };
