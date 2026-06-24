@@ -84,20 +84,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Tech Stack for Recruiters */}
-      <section style={{ maxWidth: '1000px', margin: '0 auto 64px', padding: '40px', background: 'linear-gradient(135deg, rgba(124,58,237,0.05), rgba(249,115,22,0.05))', borderRadius: '24px', border: '1px solid var(--border)' }}>
-        <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-          <span className="badge badge-warning" style={{ fontSize: '10px', letterSpacing: '1px' }}>RECRUITER QUICK-GLANCE</span>
-        </div>
-        <h2 style={{ textAlign: 'center', fontSize: '22px', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)' }}>Powered by Enterprise Microservices</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px' }}>
-          {['☕ Java 17', '🍃 Spring Boot 3', '🧩 6x Microservices', '⚡ Apache Kafka', '🔍 Elasticsearch', '🍃 MongoDB', '🐬 MySQL', '⚛️ React.js', '🚀 Vite'].map(tech => (
-            <span key={tech} className="badge" style={{ padding: '8px 16px', fontSize: '14px', background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-primary)', boxShadow: 'var(--shadow)' }}>
-              {tech}
-            </span>
-          ))}
-        </div>
-      </section>
 
       {/* Featured Electronics */}
       <section style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px 64px' }}>

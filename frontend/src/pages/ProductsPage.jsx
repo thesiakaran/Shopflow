@@ -160,6 +160,11 @@ export default function ProductsPage() {
     products.sort((a, b) => (b.price || 0) - (a.price || 0));
   }
 
+  // Client-Side Pagination (Exactly 15 items per page as requested)
+  const ITEMS_PER_PAGE = 15;
+  const displayTotalPages = Math.ceil(products.length / ITEMS_PER_PAGE) || 1;
+  const paginatedProducts = products.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
+
   const tabs = [
     { key: 'all', label: 'All Products' },
     { key: 'electronics', label: '⚡ Electronics' },
@@ -273,19 +278,19 @@ export default function ProductsPage() {
         ) : (
           <>
             <div className="product-grid">
-              {products.map((p, i) => <ProductCard key={p.id || p.mongoID || i} product={p} category={p._category} />)}
+              {paginatedProducts.map((p, i) => <ProductCard key={p.id || p.mongoID || i} product={p} category={p._category} />)}
             </div>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {displayTotalPages > 1 && (
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center', marginTop: '40px', paddingBottom: '40px' }}>
-                <button className="btn btn-outline btn-sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
+                <button className="btn btn-outline btn-sm" disabled={page === 0} onClick={() => { setPage(page - 1); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
                   ← Previous
                 </button>
                 <span style={{ fontSize: '14px', color: 'var(--text-muted)', fontWeight: 500 }}>
-                  Page {page + 1} of {totalPages}
+                  Page {page + 1} of {displayTotalPages}
                 </span>
-                <button className="btn btn-outline btn-sm" disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
+                <button className="btn btn-outline btn-sm" disabled={page >= displayTotalPages - 1} onClick={() => { setPage(page + 1); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
                   Next →
                 </button>
               </div>
