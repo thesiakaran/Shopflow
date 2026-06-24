@@ -135,34 +135,34 @@ export default function ProductCard({ product, category }) {
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'
         }} className="animate-fadeIn" onClick={closeQuickView}>
           <div className="card glass animate-fadeIn" onClick={e => e.stopPropagation()} style={{
-            width: '90%', maxWidth: '420px', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', maxHeight: '85vh'
+            width: '90%', maxWidth: '320px', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', maxHeight: '80vh'
           }}>
             <button onClick={closeQuickView} style={{
-              position: 'absolute', top: '12px', right: '12px', background: 'var(--bg-glass)', border: '1px solid var(--border)',
-              width: '32px', height: '32px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10,
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
+              position: 'absolute', top: '8px', right: '8px', background: 'var(--bg-glass)', border: '1px solid var(--border)',
+              width: '28px', height: '28px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px'
             }}>✕</button>
             
-            <div style={{ height: '260px', background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '64px' }}>📦</div>}
+            <div style={{ height: '180px', background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '48px' }}>📦</div>}
             </div>
             
-            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px', overflowY: 'auto' }}>
-              <span className="badge badge-info" style={{ alignSelf: 'flex-start' }}>{isElectronics ? '⚡ Electronics' : '👗 Fashion'}</span>
-              <h2 style={{ fontSize: '20px', fontWeight: 800, lineHeight: 1.3 }}>{name}</h2>
+            <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
+              <span className="badge badge-info" style={{ alignSelf: 'flex-start', fontSize: '10px', padding: '2px 8px' }}>{isElectronics ? '⚡ Electronics' : '👗 Fashion'}</span>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</h2>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{subtitle}</p>
-                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent)' }}>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{subtitle}</p>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent)' }}>
                   {price != null ? `₹${price.toLocaleString('en-IN')}` : 'Price N/A'}
                 </div>
               </div>
               
-              <div style={{ marginTop: '12px', display: 'flex', gap: '12px' }}>
-                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary" style={{ flex: 1, padding: '12px' }}>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary btn-sm" style={{ flex: 1 }}>
                   {adding ? '✓ Added' : 'Add to Cart'}
                 </button>
-                <Link to={detailPath} className="btn btn-outline" style={{ flex: 1, textAlign: 'center', padding: '12px' }}>
-                  Full Details
+                <Link to={detailPath} className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: 'center' }}>
+                  Details
                 </Link>
               </div>
             </div>
