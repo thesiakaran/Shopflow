@@ -61,6 +61,32 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const googleLogin = (credential) => {
+    // Decode the Google JWT
+    const base64Url = credential.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    const decoded = JSON.parse(jsonPayload);
+    
+    // Save to local storage as mock backend login
+    const userProfile = { 
+      name: decoded.name, 
+      email: decoded.email, 
+      role: 'USER', 
+      userId: decoded.sub, 
+      picture: decoded.picture 
+    };
+    
+    localStorage.setItem('token', credential);
+    localStorage.setItem('user', JSON.stringify(userProfile));
+    setToken(credential);
+    setUser(userProfile);
+    return userProfile;
+  };
+
   const register = async (name, email, password, phone) => {
     const res = await api.post('/api/auth/register', { name, email, password, phone });
     return res.data;
@@ -75,7 +101,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, googleLogin, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

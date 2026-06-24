@@ -20,7 +20,10 @@ export function CartProvider({ children }) {
       const count = res.data.reduce((sum, item) => sum + item.quantity, 0);
       setCartCount(count);
     } catch (err) {
-      console.error('Failed to fetch cart:', err);
+      // Mock Fallback
+      const mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
+      setCartItems(mockCart);
+      setCartCount(mockCart.reduce((sum, item) => sum + item.quantity, 0));
     } finally {
       setLoading(false);
     }
@@ -29,20 +32,27 @@ export function CartProvider({ children }) {
   useEffect(() => { fetchCart(); }, [fetchCart]);
 
   const addToCart = async (product) => {
+    const newItem = {
+      productId: product.productId || product.id,
+      productName: product.productName || product.name || product.productDisplayName,
+      productImage: product.productImage || product.imageUrl || `/images/${product.id}.jpg`,
+      price: product.price,
+      quantity: 1,
+      category: product.category || 'electronics',
+      id: Date.now() // mock id
+    };
     try {
-      await api.post('/api/cart/add', {
-        productId: product.productId || product.id,
-        productName: product.productName || product.name || product.productDisplayName,
-        productImage: product.productImage || product.imageUrl || `/images/${product.id}.jpg`,
-        price: product.price,
-        quantity: 1,
-        category: product.category || 'electronics',
-      });
+      await api.post('/api/cart/add', newItem);
       await fetchCart();
       setIsCartOpen(true);
     } catch (err) {
-      console.error('Failed to add to cart:', err);
-      throw err;
+      // Mock Fallback
+      const mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
+      const existing = mockCart.find(i => i.productId === newItem.productId);
+      if (existing) { existing.quantity += 1; } else { mockCart.push(newItem); }
+      localStorage.setItem('mockCart', JSON.stringify(mockCart));
+      await fetchCart();
+      setIsCartOpen(true);
     }
   };
 
@@ -51,7 +61,11 @@ export function CartProvider({ children }) {
       await api.put(`/api/cart/${cartItemId}`, { quantity });
       await fetchCart();
     } catch (err) {
-      console.error('Failed to update quantity:', err);
+      // Mock Fallback
+      let mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
+      mockCart = mockCart.map(item => item.id === cartItemId ? { ...item, quantity } : item);
+      localStorage.setItem('mockCart', JSON.stringify(mockCart));
+      await fetchCart();
     }
   };
 
@@ -60,7 +74,11 @@ export function CartProvider({ children }) {
       await api.delete(`/api/cart/${cartItemId}`);
       await fetchCart();
     } catch (err) {
-      console.error('Failed to remove item:', err);
+      // Mock Fallback
+      let mockCart = JSON.parse(localStorage.getItem('mockCart') || '[]');
+      mockCart = mockCart.filter(item => item.id !== cartItemId);
+      localStorage.setItem('mockCart', JSON.stringify(mockCart));
+      await fetchCart();
     }
   };
 
@@ -75,7 +93,10 @@ export function CartProvider({ children }) {
       setCartItems([]);
       setCartCount(0);
     } catch (err) {
-      console.error('Failed to clear cart:', err);
+      // Mock Fallback
+      localStorage.removeItem('mockCart');
+      setCartItems([]);
+      setCartCount(0);
     }
   };
 

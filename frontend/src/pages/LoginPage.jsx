@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -23,6 +24,15 @@ export default function LoginPage() {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    try {
+      googleLogin(credentialResponse.credential);
+      navigate('/');
+    } catch (err) {
+      setError('Google Login failed.');
     }
   };
 
@@ -51,6 +61,26 @@ export default function LoginPage() {
             {loading ? <><div className="spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> Logging in...</> : 'Login'}
           </button>
         </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', color: 'var(--text-subtle)' }}>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+          <span style={{ padding: '0 12px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>or continue with</span>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              setError('Google Login Failed');
+            }}
+            useOneTap
+            shape="rectangular"
+            theme="outline"
+            size="large"
+            text="continue_with"
+          />
+        </div>
 
         <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: 'var(--text-subtle)' }}>
           Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600 }}>Register</Link>

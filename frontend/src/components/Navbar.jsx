@@ -57,7 +57,9 @@ export default function Navbar() {
               fontSize: '13px', fontWeight: 500, color: 'var(--text-muted)',
               padding: '6px 12px', borderRadius: 'var(--radius)', transition: 'all 0.2s',
               background: 'var(--bg-card)', border: '1px solid var(--border)',
+              display: 'flex', alignItems: 'center', gap: '8px'
             }}>
+              {user.picture && <img src={user.picture} alt="Profile" style={{ width: '20px', height: '20px', borderRadius: '50%' }} />}
               {user.name?.split(' ')[0]}
             </Link>
 
