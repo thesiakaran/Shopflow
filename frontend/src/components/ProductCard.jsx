@@ -134,34 +134,34 @@ export default function ProductCard({ product, category }) {
           position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'
         }} className="animate-fadeIn" onClick={closeQuickView}>
-          <div className="card glass animate-slideInRight" onClick={e => e.stopPropagation()} style={{
-            width: '90%', maxWidth: '800px', display: 'flex', overflow: 'hidden', position: 'relative', maxHeight: '90vh'
+          <div className="card glass animate-fadeIn" onClick={e => e.stopPropagation()} style={{
+            width: '90%', maxWidth: '420px', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', maxHeight: '85vh'
           }}>
             <button onClick={closeQuickView} style={{
-              position: 'absolute', top: '16px', right: '16px', background: 'var(--bg-hover)', border: 'none',
-              width: '32px', height: '32px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10
+              position: 'absolute', top: '12px', right: '12px', background: 'var(--bg-glass)', border: '1px solid var(--border)',
+              width: '32px', height: '32px', borderRadius: '50%', color: 'var(--text-primary)', cursor: 'pointer', zIndex: 10,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>✕</button>
             
-            <div style={{ flex: 1, background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ height: '260px', background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '64px' }}>📦</div>}
             </div>
             
-            <div style={{ flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px', overflowY: 'auto' }}>
               <span className="badge badge-info" style={{ alignSelf: 'flex-start' }}>{isElectronics ? '⚡ Electronics' : '👗 Fashion'}</span>
-              <h2 style={{ fontSize: '24px', fontWeight: 800 }}>{name}</h2>
-              <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{subtitle}</p>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--accent)' }}>
-                {price != null ? `₹${price.toLocaleString('en-IN')}` : 'Price N/A'}
+              <h2 style={{ fontSize: '20px', fontWeight: 800, lineHeight: 1.3 }}>{name}</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{subtitle}</p>
+                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent)' }}>
+                  {price != null ? `₹${price.toLocaleString('en-IN')}` : 'Price N/A'}
+                </div>
               </div>
-              <p style={{ fontSize: '14px', color: 'var(--text-subtle)', lineHeight: 1.6 }}>
-                Experience premium quality and stunning design. This product is one of our top-rated items, ensuring you get the best value and style.
-              </p>
               
-              <div style={{ marginTop: 'auto', display: 'flex', gap: '12px' }}>
-                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary btn-lg" style={{ flex: 1 }}>
+              <div style={{ marginTop: '12px', display: 'flex', gap: '12px' }}>
+                <button onClick={handleAddToCart} disabled={adding} className="btn btn-primary" style={{ flex: 1, padding: '12px' }}>
                   {adding ? '✓ Added' : 'Add to Cart'}
                 </button>
-                <Link to={detailPath} className="btn btn-outline btn-lg" style={{ flex: 1, textAlign: 'center' }}>
+                <Link to={detailPath} className="btn btn-outline" style={{ flex: 1, textAlign: 'center', padding: '12px' }}>
                   Full Details
                 </Link>
               </div>
