@@ -9,9 +9,36 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const getPasswordStrength = (pass) => {
+    if (!pass) return 0;
+    let score = 0;
+    if (pass.length > 4) score += 1;
+    if (pass.length >= 8) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[a-z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    if (score <= 2) return 1;
+    if (score === 3) return 2;
+    if (score === 4) return 3;
+    if (score === 5) return 4;
+    if (score === 6) return 5;
+    return 1;
+  };
+
+  const strength = getPasswordStrength(form.password);
+  const strengthColors = ['var(--border)', '#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e'];
+  const strengthLabels = ['', 'Very Poor', 'Poor', 'Good', 'Strong', 'Very Strong'];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (strength < 5) {
+      setError('Password must be at least 8 characters and contain an uppercase letter, lowercase letter, a number, and a special character.');
+      return;
+    }
+
     setLoading(true);
     try {
       await register(form.name, form.email, form.password, form.phone);
@@ -38,7 +65,28 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div><label>Full Name</label><input className="input" type="text" placeholder="John Doe" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required /></div>
           <div><label>Email</label><input className="input" type="email" placeholder="john@example.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required /></div>
-          <div><label>Password</label><input className="input" type="password" placeholder="Min 6 characters" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required minLength={6} /></div>
+          <div>
+            <label>Password</label>
+            <input className="input" type="password" placeholder="Min 8 characters, uppercase, number, symbol" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required minLength={8} />
+            {form.password.length > 0 && (
+              <div style={{ marginTop: '8px', animation: 'fadeIn 0.3s ease-out' }}>
+                <div style={{ display: 'flex', gap: '4px', height: '6px', marginBottom: '6px' }}>
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <div key={level} style={{
+                      flex: 1,
+                      background: strength >= level ? strengthColors[strength] : 'var(--border)',
+                      borderRadius: '3px',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      boxShadow: strength >= level && strength >= 3 ? `0 0 8px ${strengthColors[strength]}40` : 'none'
+                    }} />
+                  ))}
+                </div>
+                <div style={{ fontSize: '13px', color: strengthColors[strength], fontWeight: 600, transition: 'color 0.4s' }}>
+                  {strengthLabels[strength]}
+                </div>
+              </div>
+            )}
+          </div>
           <div><label>Phone</label><input className="input" type="tel" placeholder="10-digit number" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} required pattern="[0-9]{10}" /></div>
           <button type="submit" className="btn btn-primary btn-lg" disabled={loading} style={{ marginTop: '8px' }}>
             {loading ? <><div className="spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> Creating...</> : 'Create Account'}
