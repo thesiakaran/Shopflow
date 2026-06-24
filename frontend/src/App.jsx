@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Components
@@ -64,11 +65,13 @@ function App() {
   return (
     <GoogleOAuthProvider clientId="284693680629-hf99kpo1ifk6i09b71mtrpu719flqijg.apps.googleusercontent.com">
       <Router>
-        <AuthProvider>
-          <CartProvider>
-            <AppContent />
-          </CartProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <CartProvider>
+              <AppContent />
+            </CartProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </Router>
     </GoogleOAuthProvider>
   );

@@ -9,6 +9,7 @@ export default function ProductCard({ product, category }) {
   const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [tiltStyle, setTiltStyle] = useState({});
 
   const isElectronics = category === 'electronics';
   const name = isElectronics ? product.name : product.productDisplayName;
@@ -37,11 +38,44 @@ export default function ProductCard({ product, category }) {
     }
   };
 
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((centerY - y) / centerY) * 10; 
+    const rotateY = ((x - centerX) / centerX) * 10;
+    
+    setTiltStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+      transition: 'none',
+      zIndex: 10,
+      boxShadow: `0 20px 40px rgba(0,0,0,0.2)`
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTiltStyle({
+      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+      transition: 'transform 0.4s ease, box-shadow 0.4s ease, z-index 0.4s',
+      zIndex: 1,
+      boxShadow: 'var(--shadow)'
+    });
+  };
+
   return (
-    <Link to={detailPath} className="card animate-fadeIn" style={{
-      overflow: 'hidden', display: 'flex', flexDirection: 'column',
-      textDecoration: 'none', position: 'relative',
-    }}>
+    <Link 
+      to={detailPath} 
+      className="card animate-fadeIn" 
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        overflow: 'hidden', display: 'flex', flexDirection: 'column',
+        textDecoration: 'none', position: 'relative',
+        ...tiltStyle
+      }}
+    >
       {/* Sale Badge */}
       {isElectronics && product.isSale === 'true' && (
         <span className="badge badge-warning" style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>SALE</span>
