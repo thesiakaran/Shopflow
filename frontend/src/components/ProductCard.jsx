@@ -98,13 +98,16 @@ export default function ProductCard({ product, category }) {
           width: '100%', height: '200px', overflow: 'hidden', position: 'relative',
           background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          {!imgError ? (
+          {!imgError && image ? (
             <img src={image} alt={name} className="product-image" onError={() => setImgError(true)} style={{
               width: '100%', height: '100%', objectFit: 'cover',
               transition: 'transform 0.4s ease',
             }} />
           ) : (
-            <div style={{ color: 'var(--text-subtle)', fontSize: '40px' }}>📦</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', background: 'var(--bg-hover)', color: 'var(--text-muted)' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span style={{ fontSize: '12px', marginTop: '8px', fontWeight: 500 }}>No Image Available</span>
+            </div>
           )}
           <button onClick={openQuickView} className="btn btn-outline quick-view-btn" style={{
             position: 'absolute', bottom: '12px', left: '50%', transform: 'translateX(-50%)',
@@ -144,7 +147,12 @@ export default function ProductCard({ product, category }) {
             }}>✕</button>
             
             <div style={{ flex: 1, background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {!imgError ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ fontSize: '64px' }}>📦</div>}
+              {!imgError && image ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setImgError(true)} /> : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span style={{ fontSize: '14px', marginTop: '12px', fontWeight: 500 }}>No Image Available</span>
+                </div>
+              )}
             </div>
             
             <div style={{ flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>

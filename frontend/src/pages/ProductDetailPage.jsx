@@ -74,10 +74,13 @@ export default function ProductDetailPage() {
       <div className="product-detail-container animate-fadeIn">
         {/* Image */}
         <div className="card" style={{ overflow: 'hidden', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
-          {!imgError ? (
+          {!imgError && image ? (
             <img src={image} alt={name} onError={() => setImgError(true)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div style={{ fontSize: '80px', color: 'var(--text-subtle)' }}>📦</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span style={{ fontSize: '16px', marginTop: '16px', fontWeight: 500 }}>No Image Available</span>
+            </div>
           )}
         </div>
 
