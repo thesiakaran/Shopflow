@@ -38,23 +38,25 @@ api.interceptors.response.use(
         }
         if (requestUrl.includes('/electronics')) {
           const res = await axios.get('/mock-electronics.json');
+          const arrayData = res.data.content || res.data;
           const parts = requestUrl.split('?')[0].split('/');
           const idStr = parts[parts.length - 1];
           if (idStr !== 'electronics' && idStr !== 'products') {
-            const product = res.data.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+            const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
             if (product) return { data: product };
           }
-          return { data: res.data };
+          return { data: arrayData };
         }
         if (requestUrl.includes('/fashion')) {
           const res = await axios.get('/mock-fashion.json');
+          const arrayData = res.data.content || res.data;
           const parts = requestUrl.split('?')[0].split('/');
           const idStr = parts[parts.length - 1];
           if (idStr !== 'fashion' && idStr !== 'products') {
-            const product = res.data.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+            const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
             if (product) return { data: product };
           }
-          return { data: res.data };
+          return { data: arrayData };
         }
       } catch (mockError) {
         console.error("Mock fallback failed", mockError);
