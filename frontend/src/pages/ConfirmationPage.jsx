@@ -1,8 +1,22 @@
+import { useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 export default function ConfirmationPage() {
   const location = useLocation();
   const order = location.state?.order;
+
+  useEffect(() => {
+    if (order) {
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#7c3aed', '#f97316', '#22c55e', '#3b82f6', '#ec4899'],
+        zIndex: 1000
+      });
+    }
+  }, [order]);
 
   if (!order) return (
     <div className="page" style={{ paddingTop: '96px', textAlign: 'center' }}>

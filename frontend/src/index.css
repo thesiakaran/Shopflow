@@ -133,6 +133,11 @@ img { max-width: 100%; display: block; }
   transition: all 0.3s ease;
 }
 .card:hover { border-color: var(--border-light); box-shadow: var(--shadow); }
+.card:hover .product-image { transform: scale(1.08) !important; }
+.card:hover .quick-view-btn { opacity: 1 !important; transform: translate(-50%, -10px) !important; }
+
+.hover-bg { transition: background 0.2s ease; }
+.hover-bg:hover { background: var(--bg-hover) !important; }
 
 /* ── Form Inputs ───────────────────────────────────────────────────────── */
 .input {
@@ -193,11 +198,26 @@ label {
 .animate-slideInRight { animation: slideInRight 0.3s ease forwards; }
 .animate-successPop   { animation: successPop 0.5s cubic-bezier(.175,.885,.32,1.275) forwards; }
 
-/* ── Loading Spinner ───────────────────────────────────────────────────── */
+/* ── Loading Spinner & Skeletons ─────────────────────────────────────────── */
 .spinner {
   width: 40px; height: 40px; border: 3px solid var(--border);
   border-top-color: var(--primary); border-radius: 50%;
   animation: spin 0.8s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.skeleton-card {
+  overflow: hidden;
+}
+.skeleton-img, .skeleton-text {
+  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+  border-radius: 4px;
 }
 
 /* ── Glassmorphism ─────────────────────────────────────────────────────── */

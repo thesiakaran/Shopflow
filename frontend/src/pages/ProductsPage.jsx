@@ -185,8 +185,36 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          {/* Search */}
-          <input className="input filter-search" placeholder="Search products..." value={search} onChange={handleSearchChange} />
+          {/* Search with Autocomplete */}
+          <div style={{ position: 'relative', flex: 1, maxWidth: '280px' }}>
+            <input className="input filter-search" style={{ width: '100%', maxWidth: '100%' }} placeholder="Search products..." value={search} onChange={handleSearchChange} onFocus={() => setSearch(search)} />
+            
+            {search && debouncedSearch && products.length > 0 && (
+              <div className="card glass animate-fadeIn" style={{
+                position: 'absolute', top: '110%', left: 0, right: 0, zIndex: 100, 
+                maxHeight: '320px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px'
+              }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-subtle)', padding: '4px 8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Top Suggestions</div>
+                {products.slice(0, 5).map(p => {
+                  const isElec = p._category === 'electronics';
+                  const name = isElec ? p.name : p.productDisplayName;
+                  const img = isElec ? (p.imageUrl?.split('-http')[0] || '') : `/images/${p.id}.jpg`;
+                  return (
+                    <a href={`/products/${p._category}/${isElec ? p.id : p.mongoID}`} key={isElec ? p.id : p.mongoID} style={{
+                      display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', 
+                      borderRadius: '8px', textDecoration: 'none', transition: 'background 0.2s'
+                    }} className="hover-bg">
+                      <img src={img} alt="" style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }} onError={(e) => e.target.style.display='none'} />
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: 700 }}>₹{p.price?.toLocaleString('en-IN')}</div>
+                      </div>
+                    </a>
+                  )
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Sort */}
           <select value={sortBy} onChange={handleSortChange} className="input filter-sort">
@@ -220,7 +248,22 @@ export default function ProductsPage() {
 
         {/* Grid */}
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '80px' }}><div className="spinner" /></div>
+          <div className="product-grid">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="card skeleton-card" style={{ height: '340px', display: 'flex', flexDirection: 'column' }}>
+                <div className="skeleton-img" style={{ height: '200px', width: '100%', borderRadius: 0 }} />
+                <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                  <div className="skeleton-text" style={{ width: '40%', height: '12px' }} />
+                  <div className="skeleton-text" style={{ width: '90%', height: '16px' }} />
+                  <div className="skeleton-text" style={{ width: '60%', height: '16px' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                    <div className="skeleton-text" style={{ width: '35%', height: '20px' }} />
+                    <div className="skeleton-text" style={{ width: '70px', height: '32px', borderRadius: '8px' }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : products.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-subtle)' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
