@@ -38,10 +38,22 @@ api.interceptors.response.use(
         }
         if (requestUrl.includes('/electronics')) {
           const res = await axios.get('/mock-electronics.json');
+          const parts = requestUrl.split('?')[0].split('/');
+          const idStr = parts[parts.length - 1];
+          if (idStr !== 'electronics' && idStr !== 'products') {
+            const product = res.data.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+            if (product) return { data: product };
+          }
           return { data: res.data };
         }
         if (requestUrl.includes('/fashion')) {
           const res = await axios.get('/mock-fashion.json');
+          const parts = requestUrl.split('?')[0].split('/');
+          const idStr = parts[parts.length - 1];
+          if (idStr !== 'fashion' && idStr !== 'products') {
+            const product = res.data.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
+            if (product) return { data: product };
+          }
           return { data: res.data };
         }
       } catch (mockError) {
