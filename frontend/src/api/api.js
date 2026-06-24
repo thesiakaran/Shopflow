@@ -45,7 +45,7 @@ api.interceptors.response.use(
             const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
             return { data: product || arrayData[0] || {} };
           }
-          return { data: arrayData };
+          return { data: res.data };
         }
         if (requestUrl.includes('/fashion')) {
           const res = await axios.get('/mock-fashion.json');
@@ -56,7 +56,7 @@ api.interceptors.response.use(
             const product = arrayData.find(p => String(p.id) === idStr || String(p.mongoID) === idStr);
             return { data: product || arrayData[0] || {} };
           }
-          return { data: arrayData };
+          return { data: res.data };
         }
       } catch (mockError) {
         console.error("Mock fallback failed", mockError);
