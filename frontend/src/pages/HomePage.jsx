@@ -1,32 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../api/api';
-import ProductCard from '../components/ProductCard';
 
 export default function HomePage() {
-  const [electronics, setElectronics] = useState([]);
-  const [fashion, setFashion] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Fetch the first page with a small size of 4 directly from backend
-        const [elecRes, fashRes] = await Promise.all([
-          api.get('/api/products/electronics', { params: { size: 4 } }),
-          api.get('/api/products/fashion', { params: { size: 4 } }),
-        ]);
-        setElectronics(elecRes.data.content);
-        setFashion(fashRes.data.content);
-      } catch (err) {
-        console.error('Failed to fetch products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
-
   return (
     <div className="page-full">
       {/* Hero Section */}
@@ -85,31 +59,6 @@ export default function HomePage() {
       </section>
 
 
-      {/* Featured Electronics */}
-      <section style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px 64px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 className="section-title">Featured Electronics</h2>
-          <Link to="/products?category=electronics" className="btn btn-ghost btn-sm">View All →</Link>
-        </div>
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}><div className="spinner" /></div>
-        ) : (
-          <div className="product-grid">{electronics.map(p => <ProductCard key={p.id} product={p} category="electronics" />)}</div>
-        )}
-      </section>
-
-      {/* Featured Fashion */}
-      <section style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px 64px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 className="section-title">Trending Fashion</h2>
-          <Link to="/products?category=fashion" className="btn btn-ghost btn-sm">View All →</Link>
-        </div>
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}><div className="spinner" /></div>
-        ) : (
-          <div className="product-grid">{fashion.map(p => <ProductCard key={p.mongoID} product={p} category="fashion" />)}</div>
-        )}
-      </section>
     </div>
   );
 }
