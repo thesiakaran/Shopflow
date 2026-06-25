@@ -50,7 +50,7 @@ api.interceptors.response.use(
         if (error.config.method?.toLowerCase() === 'put') {
           const payload = JSON.parse(error.config.data || '{}');
           const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-          const updatedUser = { ...currentUser, name: payload.name || currentUser.name, phone: payload.phone || currentUser.phone };
+          const updatedUser = { ...currentUser, name: payload.name || currentUser.name, phone: payload.phone || currentUser.phone, birthDate: payload.birthDate || currentUser.birthDate };
           localStorage.setItem('user', JSON.stringify(updatedUser));
           return { data: updatedUser };
         } else {
@@ -61,7 +61,8 @@ api.interceptors.response.use(
               email: currentUser.email || 'demo@example.com', 
               role: currentUser.role || 'USER', 
               userId: currentUser.userId || 'mock-user-123',
-              phone: currentUser.phone || ''
+              phone: currentUser.phone || '',
+              birthDate: currentUser.birthDate || ''
             } 
           };
         }

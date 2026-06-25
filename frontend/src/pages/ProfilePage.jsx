@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '' });
+  const [form, setForm] = useState({ name: '', phone: '', birthDate: '' });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -17,7 +17,7 @@ export default function ProfilePage() {
       try {
         const res = await api.get('/api/user/profile');
         setProfile(res.data);
-        setForm({ name: res.data.name, phone: res.data.phone || '' });
+        setForm({ name: res.data.name, phone: res.data.phone || '', birthDate: res.data.birthDate || '' });
       } catch (err) {
         console.error('Failed to fetch profile:', err);
       } finally {
@@ -33,7 +33,7 @@ export default function ProfilePage() {
     setMessage('');
     try {
       const res = await api.put('/api/user/profile', form);
-      setProfile({ ...profile, name: res.data.name, phone: res.data.phone });
+      setProfile({ ...profile, name: res.data.name, phone: res.data.phone, birthDate: res.data.birthDate });
       setEditing(false);
       setMessage('Profile updated successfully!');
       setTimeout(() => setMessage(''), 3000);
@@ -90,11 +90,11 @@ export default function ProfilePage() {
               {editing ? <input className="input" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="10-digit phone" /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.phone || 'Not set'}</p>}
             </div>
             <div>
-              <label>Member Since</label>
-              <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+              <label>Date of Birth</label>
+              {editing ? <input type="date" className="input" value={form.birthDate} onChange={e => setForm({ ...form, birthDate: e.target.value })} /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.birthDate ? new Date(profile.birthDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'}</p>}
             </div>
           </div>
-          {editing && <button onClick={() => { setEditing(false); setForm({ name: profile?.name || '', phone: profile?.phone || '' }); }} className="btn btn-ghost btn-sm" style={{ marginTop: '8px' }}>Cancel</button>}
+          {editing && <button onClick={() => { setEditing(false); setForm({ name: profile?.name || '', phone: profile?.phone || '', birthDate: profile?.birthDate || '' }); }} className="btn btn-ghost btn-sm" style={{ marginTop: '8px' }}>Cancel</button>}
         </div>
 
         {/* Quick Links */}
