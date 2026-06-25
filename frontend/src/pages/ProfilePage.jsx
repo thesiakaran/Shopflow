@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import AnimatedDatePicker from '../components/AnimatedDatePicker';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -91,7 +92,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <label>Date of Birth</label>
-              {editing ? <input type="date" className="input" value={form.birthDate} onChange={e => setForm({ ...form, birthDate: e.target.value })} /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.birthDate ? new Date(profile.birthDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'}</p>}
+              {editing ? <AnimatedDatePicker value={form.birthDate} onChange={val => setForm({ ...form, birthDate: val })} /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.birthDate ? new Date(profile.birthDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'}</p>}
             </div>
           </div>
           {editing && <button onClick={() => { setEditing(false); setForm({ name: profile?.name || '', phone: profile?.phone || '', birthDate: profile?.birthDate || '' }); }} className="btn btn-ghost btn-sm" style={{ marginTop: '8px' }}>Cancel</button>}
