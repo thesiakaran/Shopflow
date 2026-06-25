@@ -3,10 +3,12 @@ import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function ProductCard({ product, category }) {
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -93,6 +95,24 @@ export default function ProductCard({ product, category }) {
         {isElectronics && product.isSale === 'true' && (
           <span className="badge badge-warning" style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 2 }}>SALE</span>
         )}
+        
+        <button 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist({ ...product, _category: category }); }}
+          style={{
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2,
+            background: 'var(--bg-glass)', border: '1px solid var(--border)',
+            width: '36px', height: '36px', borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', transition: 'all 0.3s cubic-bezier(.175,.885,.32,1.275)',
+            transform: isInWishlist(isElectronics ? product.id : product.mongoID) ? 'scale(1.1)' : 'scale(1)',
+            color: isInWishlist(isElectronics ? product.id : product.mongoID) ? '#ef4444' : 'var(--text-muted)'
+          }}
+          className="hover-bg"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill={isInWishlist(isElectronics ? product.id : product.mongoID) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
 
         <div style={{
           width: '100%', height: '200px', overflow: 'hidden', position: 'relative',

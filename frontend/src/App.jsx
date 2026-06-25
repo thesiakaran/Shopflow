@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Components
@@ -22,6 +23,7 @@ const PaymentPage = React.lazy(() => import('./pages/PaymentPage'));
 const ConfirmationPage = React.lazy(() => import('./pages/ConfirmationPage'));
 const OrdersPage = React.lazy(() => import('./pages/OrdersPage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const WishlistPage = React.lazy(() => import('./pages/WishlistPage'));
 
 // Protected Route Wrapper
 function ProtectedRoute({ children }) {
@@ -53,6 +55,7 @@ function AppContent() {
             <Route path="/confirmation" element={<ProtectedRoute><ConfirmationPage /></ProtectedRoute>} />
             <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
           </Routes>
         </Suspense>
       </main>
@@ -68,7 +71,9 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              <AppContent />
+              <WishlistProvider>
+                <AppContent />
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>
