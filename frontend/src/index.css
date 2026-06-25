@@ -407,4 +407,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-align: center !important;
     margin-top: 4px !important;
   }
-}
+}html { scroll-behavior: smooth; } 
