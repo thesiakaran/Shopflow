@@ -88,7 +88,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <label>Phone</label>
-              {editing ? <input className="input" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="10-digit phone" /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.phone || 'Not set'}</p>}
+              {editing ? <input className="input" value={form.phone} maxLength={10} onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })} placeholder="10-digit phone" /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.phone || 'Not set'}</p>}
             </div>
             <div>
               <label>Date of Birth</label>
