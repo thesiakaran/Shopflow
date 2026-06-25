@@ -4,12 +4,15 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { RecentlyViewedProvider } from './context/RecentlyViewedContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartSidebar from './components/CartSidebar';
+import RecentlyViewedSidebar from './components/RecentlyViewedSidebar';
+import TopBanner from './components/TopBanner';
 
 // Lazy Loaded Pages
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -36,8 +39,10 @@ function ProtectedRoute({ children }) {
 function AppContent() {
   return (
     <>
+      <TopBanner />
       <Navbar />
       <CartSidebar />
+      <RecentlyViewedSidebar />
       <main style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <Suspense fallback={<div className="page" style={{ paddingTop: '96px', display: 'flex', justifyContent: 'center' }}><div className="spinner" /></div>}>
           <Routes>
@@ -72,7 +77,9 @@ function App() {
           <AuthProvider>
             <CartProvider>
               <WishlistProvider>
-                <AppContent />
+                <RecentlyViewedProvider>
+                  <AppContent />
+                </RecentlyViewedProvider>
               </WishlistProvider>
             </CartProvider>
           </AuthProvider>

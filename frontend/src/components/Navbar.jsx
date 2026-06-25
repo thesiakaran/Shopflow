@@ -4,12 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartCount, openCart } = useCart();
   const { isDark, toggleTheme } = useTheme();
   const { wishlist } = useWishlist();
+  const { openDrawer } = useRecentlyViewed();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -17,7 +19,7 @@ export default function Navbar() {
 
   return (
     <nav className="glass" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, height: '64px',
+      position: 'sticky', top: 0, height: '64px',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 24px', zIndex: 50, borderBottom: '1px solid var(--border)',
     }}>
@@ -50,6 +52,16 @@ export default function Navbar() {
 
         {user ? (
           <>
+            {/* Recently Viewed Button */}
+            <button onClick={openDrawer} style={{
+              position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '8px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }} title="Recently Viewed">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+
             {/* Wishlist Button */}
             <Link to="/wishlist" style={{
               position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '8px',
