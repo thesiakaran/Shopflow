@@ -47,11 +47,24 @@ api.interceptors.response.use(
         };
       }
       if (requestUrl.includes('/api/user/profile')) {
-        return { 
-          data: { 
-            name: 'Demo User', email: 'demo@example.com', role: 'USER', userId: 'mock-user-123' 
-          } 
-        };
+        if (error.config.method?.toLowerCase() === 'put') {
+          const payload = JSON.parse(error.config.data || '{}');
+          const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+          const updatedUser = { ...currentUser, name: payload.name || currentUser.name, phone: payload.phone || currentUser.phone };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return { data: updatedUser };
+        } else {
+          const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+          return { 
+            data: { 
+              name: currentUser.name || 'Demo User', 
+              email: currentUser.email || 'demo@example.com', 
+              role: currentUser.role || 'USER', 
+              userId: currentUser.userId || 'mock-user-123',
+              phone: currentUser.phone || ''
+            } 
+          };
+        }
       }
       if (requestUrl.includes('/api/orders/place')) {
         const payload = JSON.parse(error.config.data || '{}');
