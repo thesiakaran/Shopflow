@@ -7,7 +7,9 @@ export default function AnimatedDatePicker({ value, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState('days'); // 'days' | 'months'
   const [currentDate, setCurrentDate] = useState(() => {
-    return value ? new Date(value) : new Date(2000, 0, 1); // Default to year 2000 for DOB
+    if (!value) return new Date(2000, 0, 1);
+    const [y, m, d] = value.split('-');
+    return new Date(y, m - 1, d);
   });
   const [slideDir, setSlideDir] = useState('');
   const containerRef = useRef(null);
@@ -62,8 +64,8 @@ export default function AnimatedDatePicker({ value, onChange }) {
 
   const isSelected = (day) => {
     if (!value) return false;
-    const vDate = new Date(value);
-    return vDate.getDate() === day && vDate.getMonth() === month && vDate.getFullYear() === year;
+    const [y, m, d] = value.split('-');
+    return parseInt(d) === day && parseInt(m) - 1 === month && parseInt(y) === year;
   };
 
   return (
@@ -81,7 +83,10 @@ export default function AnimatedDatePicker({ value, onChange }) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span style={{ color: value ? 'inherit' : 'var(--text-subtle)' }}>
-          {value ? new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Select a date...'}
+          {value ? (() => {
+             const [y, m, d] = value.split('-');
+             return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+          })() : 'Select a date...'}
         </span>
         <span style={{ fontSize: '16px', opacity: 0.7, transition: 'transform 0.3s', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
           📅

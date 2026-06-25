@@ -92,7 +92,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <label>Date of Birth</label>
-              {editing ? <AnimatedDatePicker value={form.birthDate} onChange={val => setForm({ ...form, birthDate: val })} /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.birthDate ? new Date(profile.birthDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set'}</p>}
+              {editing ? <AnimatedDatePicker value={form.birthDate} onChange={val => setForm({ ...form, birthDate: val })} /> : <p style={{ fontSize: '15px', fontWeight: 500, padding: '12px 0' }}>{profile?.birthDate ? (() => { const [y, m, d] = profile.birthDate.split('-'); return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }); })() : 'Not set'}</p>}
             </div>
           </div>
           {editing && <button onClick={() => { setEditing(false); setForm({ name: profile?.name || '', phone: profile?.phone || '', birthDate: profile?.birthDate || '' }); }} className="btn btn-ghost btn-sm" style={{ marginTop: '8px' }}>Cancel</button>}
