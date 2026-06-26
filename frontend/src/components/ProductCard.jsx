@@ -18,7 +18,19 @@ export default function ProductCard({ product, category }) {
   const isElectronics = category === 'electronics';
   const name = isElectronics ? product.name : product.productDisplayName;
   const price = product.price;
-  const image = isElectronics ? (product.imageUrl?.split('-http')[0] || '') : `/images/${product.id}.jpg`;
+  const images = isElectronics 
+    ? (product.imageUrl ? product.imageUrl.split('-http').map((u, i) => i === 0 ? u : 'http' + u) : []) 
+    : [`/images/${product.id}.jpg`];
+  const [imgIndex, setImgIndex] = useState(0);
+  const image = images[imgIndex] || '';
+  
+  const handleImageError = () => {
+    if (imgIndex < images.length - 1) {
+      setImgIndex(prev => prev + 1);
+    } else {
+      setImgError(true);
+    }
+  };
   const subtitle = isElectronics ? product.brand : product.articleType;
   const detailPath = isElectronics ? `/products/electronics/${product.id}` : `/products/fashion/${product.mongoID}`;
 
@@ -119,7 +131,7 @@ export default function ProductCard({ product, category }) {
           background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           {!imgError && image ? (
-            <img src={image} alt={name} className="product-image" onError={() => setImgError(true)} style={{
+            <img src={image} alt={name} className="product-image" onError={handleImageError} style={{
               width: '100%', height: '100%', objectFit: 'cover',
               transition: 'transform 0.4s ease',
             }} />
@@ -167,7 +179,7 @@ export default function ProductCard({ product, category }) {
             }}>✕</button>
             
             <div style={{ flex: 1, background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {!imgError && image ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setImgError(true)} /> : (
+              {!imgError && image ? <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={handleImageError} /> : (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                   <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   <span style={{ fontSize: '14px', marginTop: '12px', fontWeight: 500 }}>No Image Available</span>

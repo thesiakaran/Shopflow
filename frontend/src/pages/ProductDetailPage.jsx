@@ -18,6 +18,12 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [imgIndex, setImgIndex] = useState(0);
+
+  useEffect(() => {
+    setImgIndex(0);
+    setImgError(false);
+  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -43,7 +49,16 @@ export default function ProductDetailPage() {
 
   const isElectronics = category === 'electronics';
   const name = product ? (isElectronics ? product.name : product.productDisplayName) : '';
-  const image = product ? (isElectronics ? (product.imageUrl?.split('-http')[0] || '') : `/images/${product.id}.jpg`) : '';
+  const images = product ? (isElectronics ? (product.imageUrl ? product.imageUrl.split('-http').map((u, i) => i === 0 ? u : 'http' + u) : []) : [`/images/${product.id}.jpg`]) : [];
+  const image = images[imgIndex] || '';
+
+  const handleImageError = () => {
+    if (imgIndex < images.length - 1) {
+      setImgIndex(prev => prev + 1);
+    } else {
+      setImgError(true);
+    }
+  };
   const price = product?.price;
 
   const handleAddToCart = async () => {
@@ -86,7 +101,7 @@ export default function ProductDetailPage() {
         {/* Image */}
         <div className="card" style={{ overflow: 'hidden', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
           {!imgError && image ? (
-            <img src={image} alt={name} onError={() => setImgError(true)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={image} alt={name} onError={handleImageError} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
               <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
