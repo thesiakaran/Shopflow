@@ -36,9 +36,45 @@ scratch/
 elasticsearch/
 kafka/
 
-# Temporary files
+# Product images (served from CDN/Cloudinary, not from git)
+frontend/public/images/
+
+# Large data/debug files
+clean_tree.txt
+clean_tree_utf8.txt
+tree_structure.txt
+upload_progress.json
+*.csv
+
+# One-off utility scripts
+check_schema.py
+clean_images.py
+csv_to_json.py
+curate_products.py
+pad_fashion.py
+upload_to_cloudinary.js
+
+# Temporary/working files
 abba.txt
 prmpt.txt
+doc.txt
+error.txt
 shopflow_completion_plan.md
 shopflow_report.md
-error.txt
+shopflow_architecture_and_file_analysis.md
+test_kafka_integration.py
+
+# Old/backup files
+ProductsPage_old.jsx
+
+# Root-level package files (frontend has its own)
+/package.json
+/package-lock.json
+/proxy-server.js
+
+# Frontend test artifacts
+frontend/test.cjs
+frontend/error.txt
+
+# Docs (generated reports, not source documentation)
+docs/
