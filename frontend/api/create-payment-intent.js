@@ -1,10 +1,13 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        return res.status(500).json({ error: "STRIPE_SECRET_KEY is completely missing in Vercel Environment Variables!" });
+      }
+
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
       const { amount, currency } = req.body;
 
       const paymentIntent = await stripe.paymentIntents.create({
