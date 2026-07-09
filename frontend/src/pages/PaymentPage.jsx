@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import axios from 'axios';
 import api from '../api/api';
 import { useCart } from '../context/CartContext';
 import { loadStripe } from '@stripe/stripe-js';
@@ -67,8 +68,8 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (paymentMethod === 'CARD' && cartTotal > 0) {
-      // Pointing to the Vercel Serverless Function instead of Spring Boot
-      api.post('/api/create-payment-intent', {
+      // Pointing to the Vercel Serverless Function directly via window.location.origin
+      axios.post(window.location.origin + '/api/create-payment-intent', {
         amount: (cartTotal + deliveryCharge) * 100, // Stripe expects amount in paise
         currency: 'inr'
       }).then(res => {
