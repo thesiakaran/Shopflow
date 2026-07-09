@@ -76,7 +76,8 @@ export default function PaymentPage() {
         setClientSecret(res.data.clientSecret);
       }).catch(err => {
         console.error(err);
-        setError('Failed to initialize payment gateway.');
+        const errMsg = err.response?.data?.error || err.message || 'Unknown error';
+        setError('Failed to initialize: ' + errMsg);
       });
     }
   }, [paymentMethod, cartTotal, deliveryCharge]);
