@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thesia Karan — Java Backend Developer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>6:59 PM 7/6/2026
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { 'inter': ['Inter','sans-serif'], 'serif': ['Playfair Display','serif'], 'mono': ['JetBrains Mono','monospace'] },
+      colors: {
+        navy: { 50:'#f0f2f8', 100:'#dce0ef', 200:'#b8c1df', 300:'#8a9ac8', 400:'#5a6fad', 500:'#3d4f8a', 600:'#2a3a6b', 700:'#1c284d', 800:'#111c38', 900:'#0a0e1a', 950:'#060912' },
+        gold: { 50:'#fdf8ed', 100:'#faefce', 200:'#f4dc9a', 300:'#edc65f', 400:'#d4a853', 500:'#c49a3c', 600:'#a87d2e', 700:'#876027', 800:'#6e4e25', 900:'#5c4222' }
+      }
+    }
+  }
+}
+</script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:#060912;color:#e8e8e8;overflow-x:hidden}
+
+  ::-webkit-scrollbar{width:5px}
+  ::-webkit-scrollbar-track{background:#060912}
+  ::-webkit-scrollbar-thumb{background:#c49a3c;border-radius:3px}
+
+  /* Cursor */
+  .cursor-dot{width:6px;height:6px;background:#d4a853;border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .1s}
+  .cursor-ring{width:36px;height:36px;border:1.5px solid rgba(212,168,83,0.3);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .2s ease-out}
+  .cursor-ring.hover{transform:scale(1.6);border-color:rgba(212,168,83,0.6);background:rgba(212,168,83,0.04)}
+
+  /* Gradient Text */
+  .gold-gradient{
+    background:linear-gradient(135deg,#edc65f,#d4a853,#c49a3c,#d4a853);
+    background-size:200% 200%;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    animation:goldShift 5s ease infinite;
+  }
+  @keyframes goldShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+  /* Glow */
+  .gold-glow{text-shadow:0 0 30px rgba(212,168,83,0.15)}
+  .box-gold{box-shadow:0 0 0 1px rgba(212,168,83,0.08),0 4px 24px rgba(0,0,0,0.4)}
+  .box-gold-hover:hover{box-shadow:0 0 0 1px rgba(212,168,83,0.2),0 8px 40px rgba(0,0,0,0.5);border-color:rgba(212,168,83,0.25)}
+
+  /* Glass */
+  .glass{background:rgba(15,20,36,0.7);backdrop-filter:blur(20px);border:1px solid rgba(212,168,83,0.08)}
+
+  /* Section Highlight */
+  .section-accent{position:relative}
+  .section-accent::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,83,0.5),transparent)}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+  .reveal.active{opacity:1;transform:translateY(0)}
+  .reveal-left{opacity:0;transform:translateX(-50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+  .reveal-left.active{opacity:1;transform:translateX(0)}
+  .reveal-right{opacity:0;transform:translateX(50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+  .reveal-right.active{opacity:1;transform:translateX(0)}
+  .reveal-scale{opacity:0;transform:scale(.92);transition:all .8s cubic-bezier(.16,1,.3,1)}
+  .reveal-scale.active{opacity:1;transform:scale(1)}
+
+  /* Typing */
+  .type-cursor{display:inline-block;width:2px;height:1.1em;background:#d4a853;margin-left:3px;animation:blink 1s step-end infinite;vertical-align:text-bottom}
+  @keyframes blink{50%{opacity:0}}
+
+  /* 3D Tilt */
+  .tilt-card{transform-style:preserve-3d;transition:transform .25s ease,box-shadow .3s}
+  .tilt-card:hover{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale3d(1.01,1.01,1.01)}
+
+  /* Float 3D */
+  .float-3d{perspective:600px}
+  .float-3d-inner{transform-style:preserve-3d;animation:floatR 8s ease-in-out infinite}
+  @keyframes floatR{0%,100%{transform:rotateY(0) rotateX(0) translateY(0)}25%{transform:rotateY(8deg) rotateX(4deg) translateY(-12px)}50%{transform:rotateY(-6deg) rotateX(-3deg) translateY(-6px)}75%{transform:rotateY(10deg) rotateX(6deg) translateY(-16px)}}
+
+  /* Cube */
+  .cube-wrap{perspective:500px;width:48px;height:48px}
+  .cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:cubeR 6s linear infinite}
+  .cf{position:absolute;width:48px;height:48px;border:1px solid rgba(212,168,83,0.2);background:rgba(212,168,83,0.03);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#d4a853;font-family:'JetBrains Mono',monospace}
+  .cf.f{transform:translateZ(24px)}.cf.b{transform:rotateY(180deg) translateZ(24px)}.cf.r{transform:rotateY(90deg) translateZ(24px)}.cf.l{transform:rotateY(-90deg) translateZ(24px)}.cf.t{transform:rotateX(90deg) translateZ(24px)}.cf.bo{transform:rotateX(-90deg) translateZ(24px)}
+  @keyframes cubeR{0%{transform:rotateX(0) rotateY(0)}100%{transform:rotateX(360deg) rotateY(360deg)}}
+
+  /* Skill Bar */
+  .skill-fill{width:0;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+  .skill-fill.animated{width:var(--w)}
+
+  /* Tech Tag */
+  .tech-tag{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:500;background:rgba(212,168,83,0.06);border:1px solid rgba(212,168,83,0.12);color:#edc65f;transition:all .25s}
+  .tech-tag:hover{background:rgba(212,168,83,0.12);border-color:rgba(212,168,83,0.3);transform:translateY(-1px)}
+
+  /* Nav */
+  .nav-link{position:relative;color:#7a8599;transition:color .3s;font-size:13px;font-weight:500;letter-spacing:0.02em}
+  .nav-link:hover,.nav-link.active{color:#edc65f}
+  .nav-link::after{content:'';position:absolute;bottom:-6px;left:50%;width:0;height:1.5px;background:linear-gradient(90deg,#c49a3c,#edc65f);transition:all .3s;transform:translateX(-50%);border-radius:1px}
+  .nav-link:hover::after,.nav-link.active::after{width:100%}
+
+  /* Timeline */
+  .tl-line{position:absolute;left:7px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,#d4a853,rgba(212,168,83,0.05))}
+  .tl-dot{width:15px;height:15px;border-radius:50%;border:2px solid #0a0e1a;background:#d4a853;box-shadow:0 0 12px rgba(212,168,83,0.3);position:absolute;left:0;top:4px}
+
+  /* Live */
+  .live-dot{position:relative;display:inline-block}
+  .live-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:#22c55e;animation:lp 2s ease-out infinite;z-index:-1}
+  @keyframes lp{0%{transform:scale(1);opacity:.5}100%{transform:scale(3);opacity:0}}
+
+  /* Particles */
+  .ptcl{position:absolute;width:2px;height:2px;background:rgba(212,168,83,0.25);border-radius:50%;pointer-events:none;animation:ptclF linear infinite}
+  @keyframes ptclF{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) translateX(30px);opacity:0}}
+
+  /* Marquee */
+  .mq-track{display:flex;gap:28px;animation:mq 30s linear infinite}
+  @keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* Grid bg */
+  .grid-bg{background-image:linear-gradient(rgba(212,168,83,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,83,0.015) 1px,transparent 1px);background-size:80px 80px}
+
+  .stat-num{font-variant-numeric:tabular-nums}
+
+  /* Subtle grain */
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  @media(max-width:768px){
+    body{cursor:auto}.cursor-dot,.cursor-ring{display:none}
+  }
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- Cursor -->
+<div class="cursor-dot" id="cDot"></div>
+<div class="cursor-ring" id="cRing"></div>
+
+<!-- Particles -->
+<div id="ptcls" class="fixed inset-0 pointer-events-none z-0"></div>
+
+<!-- ========== NAV ========== -->
+<nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-3 group" data-hover>
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-bold text-sm shadow-lg shadow-gold-400/10 group-hover:shadow-gold-400/20 transition-shadow">T</div>
+      <div>
+        <span class="text-sm font-semibold text-white tracking-tight">Thesia Karan</span>
+        <span class="hidden sm:inline text-xs text-navy-400 ml-2 font-light">Backend Developer</span>
+      </div>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#about" class="nav-link" data-hover>About</a>
+      <a href="#skills" class="nav-link" data-hover>Skills</a>
+      <a href="#projects" class="nav-link" data-hover>Projects</a>
+      <a href="#education" class="nav-link" data-hover>Education</a>
+      <a href="#contact" class="nav-link" data-hover>Contact</a>
+    </div>
+    <a href="#contact" class="hidden md:flex items-center gap-2 px-5 py-2 rounded-lg bg-gold-400/10 border border-gold-400/20 text-gold-300 text-xs font-semibold tracking-wide hover:bg-gold-400/15 hover:border-gold-400/35 transition-all" data-hover>
+      Get in Touch
+      <iconify-icon icon="lucide:arrow-right" width="13"></iconify-icon>
+    </a>
+    <button id="mobBtn" class="md:hidden text-white" data-hover><iconify-icon icon="lucide:menu" width="22"></iconify-icon></button>
+  </div>
+  <div id="mobMenu" class="md:hidden hidden glass border-t border-gold-400/5">
+    <div class="px-6 py-4 flex flex-col gap-3">
+      <a href="#about" class="text-sm text-navy-300 hover:text-gold-300 py-1.5 ml">About</a>
+      <a href="#skills" class="text-sm text-navy-300 hover:text-gold-300 py-1.5 ml">Skills</a>
+      <a href="#projects" class="text-sm text-navy-300 hover:text-gold-300 py-1.5 ml">Projects</a>
+      <a href="#education" class="text-sm text-navy-300 hover:text-gold-300 py-1.5 ml">Education</a>
+      <a href="#contact" class="text-sm text-navy-300 hover:text-gold-300 py-1.5 ml">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- Ambient glow -->
+  <div class="absolute w-[700px] h-[700px] rounded-full bg-gold-400/[0.03] blur-[180px] -top-60 -right-60 pointer-events-none"></div>
+  <div class="absolute w-[500px] h-[500px] rounded-full bg-navy-600/20 blur-[150px] -bottom-40 -left-40 pointer-events-none"></div>
+
+  <!-- 3D Cube -->
+  <div class="absolute top-32 right-12 md:right-28 float-3d opacity-40 hidden sm:block">
+    <div class="float-3d-inner" style="animation-delay:-2s">
+      <div class="cube-wrap"><div class="cube">
+        <div class="cf f">&lt;/&gt;</div><div class="cf b">{ }</div><div class="cf r">Java</div><div class="cf l">API</div><div class="cf t">☕</div><div class="cf bo">☁</div>
+      </div></div>
+    </div>
+  </div>
+  <div class="absolute bottom-40 left-10 md:left-24 float-3d opacity-30 hidden sm:block">
+    <div class="float-3d-inner" style="animation-delay:-5s;animation-duration:10s">
+      <div class="w-14 h-14 rounded-xl border border-gold-400/15 bg-gold-400/[0.03] flex items-center justify-center">
+        <iconify-icon icon="logos:spring-icon" width="28"></iconify-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+    <!-- Status -->
+    <div class="reveal inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass mb-8" style="transition-delay:.1s">
+      <span class="relative flex h-2 w-2"><span class="live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+      <span class="text-xs text-navy-300 font-medium">Open to Backend Internships</span>
+    </div>
+
+    <!-- Name -->
+    <h1 class="reveal text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-[0.95] mb-6" style="transition-delay:.2s">
+      <span class="block text-white font-serif">Thesia</span>
+      <span class="block gold-gradient font-serif">Karan</span>
+    </h1>
+
+    <!-- Typing -->
+    <div class="reveal h-7 mb-8" style="transition-delay:.3s">
+      <span class="text-navy-400 text-base font-light" id="typeEl"></span>
+      <span class="type-cursor"></span>
+    </div>
+
+    <!-- Summary -->
+    <p class="reveal text-sm sm:text-base text-navy-300 max-w-2xl mx-auto leading-relaxed mb-10 font-light" style="transition-delay:.4s">
+      Java backend developer building <span class="text-gold-300 font-medium">distributed systems</span> with Spring Boot, Microservices, and Kafka. Pursuing MCA (2026) and solving DSA daily on LeetCode.
+    </p>
+
+    <!-- CTAs -->
+    <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-3" style="transition-delay:.5s">
+      <a href="#projects" class="group flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 text-navy-950 text-sm font-bold tracking-wide hover:from-gold-300 hover:to-gold-400 transition-all shadow-lg shadow-gold-400/15 hover:shadow-gold-400/25" data-hover>
+        View Projects
+        <iconify-icon icon="lucide:arrow-down" width="15" class="group-hover:translate-y-0.5 transition-transform"></iconify-icon>
+      </a>
+      <a href="https://linkedin.com/in/karan-thesia-b45703346" target="_blank" class="group flex items-center gap-2 px-8 py-3.5 rounded-xl glass box-gold box-gold-hover text-sm font-medium text-navy-200" data-hover>
+        <iconify-icon icon="lucide:linkedin" width="16" class="text-gold-400"></iconify-icon>
+        LinkedIn
+      </a>
+      <a href="mailto:thesiakaran@gmail.com" class="group flex items-center gap-2 px-8 py-3.5 rounded-xl glass box-gold box-gold-hover text-sm font-medium text-navy-200" data-hover>
+        <iconify-icon icon="lucide:mail" width="16" class="text-gold-400"></iconify-icon>
+        Email
+      </a>
+    </div>
+
+    <!-- Scroll -->
+    <div class="reveal absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style="transition-delay:.8s">
+      <span class="text-[9px] uppercase tracking-[0.25em] text-navy-600 font-medium">Scroll</span>
+      <div class="w-5 h-8 rounded-full border border-navy-700 flex justify-center pt-1.5">
+        <div class="w-1 h-2 rounded-full bg-gold-400 animate-bounce"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MARQUEE ========== -->
+<section class="py-10 border-y border-gold-400/[0.06] overflow-hidden relative">
+  <div class="absolute inset-0 bg-gradient-to-r from-navy-950 via-transparent to-navy-950 z-10 pointer-events-none"></div>
+  <div class="mq-track">
+    <div class="flex items-center gap-7 text-navy-600 text-xs font-medium whitespace-nowrap">
+      <span>Java</span><span class="text-gold-400/30">✦</span><span>Spring Boot</span><span class="text-gold-400/30">✦</span><span>Microservices</span><span class="text-gold-400/30">✦</span><span>Apache Kafka</span><span class="text-gold-400/30">✦</span><span>Redis</span><span class="text-gold-400/30">✦</span><span>PostgreSQL</span><span class="text-gold-400/30">✦</span><span>MongoDB</span><span class="text-gold-400/30">✦</span><span>Docker</span><span class="text-gold-400/30">✦</span><span>Spring Security</span><span class="text-gold-400/30">✦</span><span>JWT</span><span class="text-gold-400/30">✦</span><span>REST APIs</span><span class="text-gold-400/30">✦</span><span>React</span><span class="text-gold-400/30">✦</span><span>Git</span><span class="text-gold-400/30">✦</span><span>Maven</span><span class="text-gold-400/30">✦</span>
+    </div>
+    <div class="flex items-center gap-7 text-navy-600 text-xs font-medium whitespace-nowrap">
+      <span>Java</span><span class="text-gold-400/30">✦</span><span>Spring Boot</span><span class="text-gold-400/30">✦</span><span>Microservices</span><span class="text-gold-400/30">✦</span><span>Apache Kafka</span><span class="text-gold-400/30">✦</span><span>Redis</span><span class="text-gold-400/30">✦</span><span>PostgreSQL</span><span class="text-gold-400/30">✦</span><span>MongoDB</span><span class="text-gold-400/30">✦</span><span>Docker</span><span class="text-gold-400/30">✦</span><span>Spring Security</span><span class="text-gold-400/30">✦</span><span>JWT</span><span class="text-gold-400/30">✦</span><span>REST APIs</span><span class="text-gold-400/30">✦</span><span>React</span><span class="text-gold-400/30">✦</span><span>Git</span><span class="text-gold-400/30">✦</span><span>Maven</span><span class="text-gold-400/30">✦</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section id="about" class="py-24 md:py-32 relative z-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <!-- Left: Visual Card -->
+      <div class="reveal-left">
+        <div class="relative">
+          <div class="glass box-gold rounded-2xl p-8 text-center">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-2xl font-bold text-navy-950 mx-auto mb-5 shadow-xl shadow-gold-400/15">TK</div>
+            <div class="font-mono text-xs leading-loose text-left max-w-xs mx-auto">
+              <p><span class="text-navy-500">const</span> <span class="text-gold-400">developer</span> = {</p>
+              <p class="pl-4"><span class="text-gold-300">name</span>: <span class="text-emerald-400/80">"Thesia Karan"</span>,</p>
+              <p class="pl-4"><span class="text-gold-300">role</span>: <span class="text-emerald-400/80">"Backend Dev"</span>,</p>
+              <p class="pl-4"><span class="text-gold-300">stack</span>: <span class="text-emerald-400/80">"Spring Boot"</span>,</p>
+              <p class="pl-4"><span class="text-gold-300">focus</span>: <span class="text-emerald-400/80">"Microservices"</span>,</p>
+              <p class="pl-4"><span class="text-gold-300">available</span>: <span class="text-sky-400">true</span></p>
+              <p>};</p>
+            </div>
+          </div>
+          <!-- Floating badges -->
+          <div class="absolute -top-3 -right-3 px-3 py-1.5 rounded-lg bg-navy-800/90 border border-gold-400/20 text-[10px] font-mono text-gold-300 float-3d shadow-lg" style="animation-delay:-1s">
+            <div class="float-3d-inner" style="animation-duration:5s">☕ Java</div>
+          </div>
+          <div class="absolute -bottom-3 -left-3 px-3 py-1.5 rounded-lg bg-navy-800/90 border border-gold-400/20 text-[10px] font-mono text-gold-300 float-3d shadow-lg" style="animation-delay:-4s">
+            <div class="float-3d-inner" style="animation-duration:6s">🚀 Spring</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Text -->
+      <div class="reveal-right">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-[1px] bg-gold-400/60"></div>
+          <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">About Me</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2 font-serif">
+          Crafting Backend Systems<br>That <span class="gold-gradient">Scale</span>
+        </h2>
+        <p class="text-navy-300 text-sm leading-relaxed mb-4 font-light">
+          I'm a Java backend developer finishing my MCA (2026) with hands-on experience building REST APIs using Spring Boot, Spring Security, and JWT. Currently building a distributed e-commerce platform with microservices, Kafka, Redis, and Docker — live and deployed.
+        </p>
+        <p class="text-navy-500 text-sm leading-relaxed mb-8 font-light">
+          Built an e-commerce site using PHP and JavaScript, and an Instagram clone with Java multithreading. Practising DSA on LeetCode daily.
+        </p>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="text-center p-4 rounded-xl glass box-gold box-gold-hover">
+            <div class="text-2xl font-bold text-white stat-num" data-target="3">0</div>
+            <div class="text-[10px] uppercase tracking-wider text-navy-500 mt-1 font-medium">Projects</div>
+          </div>
+          <div class="text-center p-4 rounded-xl glass box-gold box-gold-hover">
+            <div class="text-2xl font-bold text-white stat-num" data-target="6">0</div>
+            <div class="text-[10px] uppercase tracking-wider text-navy-500 mt-1 font-medium">Microservices</div>
+          </div>
+          <div class="text-center p-4 rounded-xl glass box-gold box-gold-hover">
+            <div class="text-2xl font-bold text-white stat-num" data-target="15">0</div>
+            <div class="text-[10px] uppercase tracking-wider text-navy-500 mt-1 font-medium">Tech Stack</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SKILLS (HIGHLIGHTED) ========== -->
+<section id="skills" class="py-24 md:py-32 relative z-10 section-accent">
+  <div class="absolute w-[500px] h-[500px] rounded-full bg-gold-400/[0.02] blur-[160px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto px-6 relative">
+    <div class="text-center mb-14">
+      <div class="reveal flex items-center justify-center gap-3 mb-3">
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+        <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Technical Arsenal</span>
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+      </div>
+      <h2 class="reveal text-3xl md:text-5xl font-bold tracking-tight text-white font-serif" style="transition-delay:.1s">
+        Skills & <span class="gold-gradient">Technologies</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Languages -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.1s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:code-2" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Languages</h3>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">Java</span><span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span><span class="tech-tag">SQL</span><span class="tech-tag">Python</span>
+        </div>
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-navy-500">Java Proficiency</span><span class="text-gold-400 font-mono">85%</span></div>
+        <div class="h-1 rounded-full bg-navy-800 overflow-hidden"><div class="skill-fill h-full rounded-full bg-gradient-to-r from-gold-500 to-gold-300" style="--w:85%"></div></div>
+      </div>
+
+      <!-- Frameworks -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.2s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:layers" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Frameworks</h3>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">Spring Boot</span><span class="tech-tag">Spring MVC</span><span class="tech-tag">Spring Security</span><span class="tech-tag">Spring Data JPA</span><span class="tech-tag">Spring Cloud GW</span>
+        </div>
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-navy-500">Spring Ecosystem</span><span class="text-gold-400 font-mono">80%</span></div>
+        <div class="h-1 rounded-full bg-navy-800 overflow-hidden"><div class="skill-fill h-full rounded-full bg-gradient-to-r from-gold-500 to-gold-300" style="--w:80%"></div></div>
+      </div>
+
+      <!-- Messaging -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.3s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:zap" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Messaging & Cache</h3>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">Apache Kafka</span><span class="tech-tag">Redis</span>
+        </div>
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-navy-500">Kafka + Redis</span><span class="text-gold-400 font-mono">75%</span></div>
+        <div class="h-1 rounded-full bg-navy-800 overflow-hidden"><div class="skill-fill h-full rounded-full bg-gradient-to-r from-gold-500 to-gold-300" style="--w:75%"></div></div>
+      </div>
+
+      <!-- Databases -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.4s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:database" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Databases</h3>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">MySQL</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">MongoDB</span>
+        </div>
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-navy-500">Database Skills</span><span class="text-gold-400 font-mono">80%</span></div>
+        <div class="h-1 rounded-full bg-navy-800 overflow-hidden"><div class="skill-fill h-full rounded-full bg-gradient-to-r from-gold-500 to-gold-300" style="--w:80%"></div></div>
+      </div>
+
+      <!-- Tools -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.5s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:wrench" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Web & Tools</h3>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="tech-tag">Git</span><span class="tech-tag">GitHub</span><span class="tech-tag">Docker</span><span class="tech-tag">Maven</span><span class="tech-tag">Postman</span><span class="tech-tag">IntelliJ IDEA</span>
+        </div>
+      </div>
+
+      <!-- Fundamentals -->
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.6s" data-hover>
+        <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center mb-4 group-hover:bg-gold-400/15 transition-colors">
+          <iconify-icon icon="lucide:brain" width="18" class="text-gold-400"></iconify-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-white mb-3">Fundamentals</h3>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="tech-tag">DSA</span><span class="tech-tag">OOP</span><span class="tech-tag">DBMS</span><span class="tech-tag">Computer Networks</span><span class="tech-tag">Multithreading</span><span class="tech-tag">Microservices</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROJECTS (HIGHLIGHTED) ========== -->
+<section id="projects" class="py-24 md:py-32 relative z-10 section-accent">
+  <div class="max-w-6xl mx-auto px-6 relative">
+    <div class="text-center mb-14">
+      <div class="reveal flex items-center justify-center gap-3 mb-3">
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+        <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Featured Work</span>
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+      </div>
+      <h2 class="reveal text-3xl md:text-5xl font-bold tracking-tight text-white font-serif" style="transition-delay:.1s">
+        Projects I've <span class="gold-gradient">Built</span>
+      </h2>
+    </div>
+
+    <!-- Featured Project -->
+    <div class="reveal-scale mb-6" style="transition-delay:.2s">
+      <div class="relative rounded-2xl overflow-hidden glass border border-gold-400/15 box-gold" style="box-shadow:0 0 0 1px rgba(212,168,83,0.12),0 8px 48px rgba(0,0,0,0.5),0 0 80px rgba(212,168,83,0.03)" data-hover>
+        <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"></div>
+        <!-- Live badge -->
+        <div class="absolute top-5 right-5 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 backdrop-blur-sm">
+          <span class="relative flex h-2 w-2"><span class="live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
+        </div>
+
+        <div class="p-8 md:p-10">
+          <div class="flex flex-col lg:flex-row gap-10">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="px-2.5 py-1 rounded-md bg-gold-400/10 border border-gold-400/20 text-[10px] font-bold text-gold-300 uppercase tracking-widest">Featured Project</span>
+                <span class="text-navy-600 text-xs">Jun 2025 – Present</span>
+              </div>
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-3 font-serif">Distributed E-Commerce Platform</h3>
+              <p class="text-navy-300 text-sm leading-relaxed mb-6 font-light">
+                Built 6 independent microservices routed through a Spring Cloud API Gateway with JWT auth. Order lifecycle wired through Kafka — placing an order fires events to Inventory, Payment, and Notification services without direct calls. Redis for cart caching, PostgreSQL for transactions, MongoDB for catalogue. Containerised with Docker and deployed live.
+              </p>
+
+              <!-- Architecture -->
+              <div class="mb-6 p-5 rounded-xl bg-navy-900/50 border border-gold-400/[0.06]">
+                <div class="text-[10px] uppercase tracking-widest text-navy-600 mb-3 font-semibold">Microservices Architecture</div>
+                <div class="flex flex-wrap gap-2">
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">User</div>
+                  <iconify-icon icon="lucide:chevron-right" width="12" class="text-navy-700 self-center"></iconify-icon>
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">Product</div>
+                  <iconify-icon icon="lucide:chevron-right" width="12" class="text-navy-700 self-center"></iconify-icon>
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">Order</div>
+                  <iconify-icon icon="lucide:chevron-right" width="12" class="text-navy-700 self-center"></iconify-icon>
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">Cart</div>
+                  <iconify-icon icon="lucide:chevron-right" width="12" class="text-navy-700 self-center"></iconify-icon>
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">Inventory</div>
+                  <iconify-icon icon="lucide:chevron-right" width="12" class="text-navy-700 self-center"></iconify-icon>
+                  <div class="px-3 py-1.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15 text-xs font-mono text-gold-300">Payment</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 mb-6">
+                <span class="tech-tag">Spring Boot</span><span class="tech-tag">Kafka</span><span class="tech-tag">Redis</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">MongoDB</span><span class="tech-tag">Docker</span><span class="tech-tag">React</span><span class="tech-tag">Spring Cloud GW</span>
+              </div>
+
+              <a href="https://shopflow-mauve.vercel.app/" target="_blank" class="inline-flex items-center gap-2.5 px-7 py-3 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 text-navy-950 text-sm font-bold tracking-wide hover:from-gold-300 hover:to-gold-400 transition-all shadow-lg shadow-gold-400/15 group" data-hover>
+                <iconify-icon icon="lucide:external-link" width="15"></iconify-icon>
+                View Live Demo
+                <iconify-icon icon="lucide:arrow-right" width="15" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+              </a>
+            </div>
+
+            <!-- Right: 3D Architecture -->
+            <div class="w-full lg:w-80 flex-shrink-0">
+              <div class="float-3d">
+                <div class="float-3d-inner w-full aspect-square rounded-2xl glass border border-gold-400/10 flex items-center justify-center p-6 box-gold">
+                  <div class="w-full">
+                    <div class="text-center mb-4">
+                      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-400/10 border border-gold-400/20">
+                        <iconify-icon icon="lucide:shield" width="12" class="text-gold-400"></iconify-icon>
+                        <span class="text-[10px] font-mono font-medium text-gold-300">API Gateway + JWT</span>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:user" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">User</div></div>
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:package" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">Product</div></div>
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:shopping-cart" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">Cart</div></div>
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:clipboard-list" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">Order</div></div>
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:warehouse" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">Inventory</div></div>
+                      <div class="p-2.5 rounded-lg bg-gold-400/[0.04] border border-gold-400/[0.08] text-center"><iconify-icon icon="lucide:credit-card" width="14" class="text-gold-400"></iconify-icon><div class="text-[8px] text-navy-500 mt-1">Payment</div></div>
+                    </div>
+                    <div class="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-gold-400/[0.06] border border-gold-400/15">
+                      <iconify-icon icon="lucide:radio" width="12" class="text-gold-400"></iconify-icon>
+                      <span class="text-[10px] font-mono font-medium text-gold-300">Kafka Event Bus</span>
+                    </div>
+                    <div class="flex justify-center gap-2 mt-2">
+                      <div class="px-2.5 py-1 rounded-md bg-gold-400/[0.04] border border-gold-400/[0.08] text-[8px] font-mono text-navy-400">Redis</div>
+                      <div class="px-2.5 py-1 rounded-md bg-gold-400/[0.04] border border-gold-400/[0.08] text-[8px] font-mono text-navy-400">PostgreSQL</div>
+                      <div class="px-2.5 py-1 rounded-md bg-gold-400/[0.04] border border-gold-400/[0.08] text-[8px] font-mono text-navy-400">MongoDB</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Projects -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.3s" data-hover>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-navy-600 text-xs font-mono">May 2024 – Oct 2024</span>
+          <div class="w-8 h-8 rounded-lg bg-gold-400/[0.06] flex items-center justify-center group-hover:bg-gold-400/10 transition-colors">
+            <iconify-icon icon="lucide:shopping-bag" width="15" class="text-gold-400/60"></iconify-icon>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-serif">Mobile Mart — E-Commerce</h3>
+        <p class="text-navy-400 text-sm leading-relaxed mb-4 font-light">Full e-commerce website with product listing, cart, and order pages. PHP server-side logic, JavaScript for dynamic UI, MySQL via XAMPP. Handled CRUD for products, users, and orders.</p>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span><span class="tech-tag">MySQL</span><span class="tech-tag">XAMPP</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs text-navy-600">
+          <span class="flex items-center gap-1.5"><iconify-icon icon="lucide:database" width="12"></iconify-icon>CRUD Operations</span>
+          <span class="flex items-center gap-1.5"><iconify-icon icon="lucide:layout-grid" width="12"></iconify-icon>Full Stack</span>
+        </div>
+      </div>
+
+      <div class="reveal tilt-card glass box-gold box-gold-hover rounded-2xl p-6 group" style="transition-delay:.4s" data-hover>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-navy-600 text-xs font-mono">Sep 2023 – Apr 2024</span>
+          <div class="w-8 h-8 rounded-lg bg-gold-400/[0.06] flex items-center justify-center group-hover:bg-gold-400/10 transition-colors">
+            <iconify-icon icon="lucide:camera" width="15" class="text-gold-400/60"></iconify-icon>
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-serif">Insta World — Instagram Clone</h3>
+        <p class="text-navy-400 text-sm leading-relaxed mb-4 font-light">Social feed backend using Java multithreading. Producer-consumer pattern with synchronization to handle concurrent feed writes safely.</p>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span class="tech-tag">Java</span><span class="tech-tag">Multithreading</span><span class="tech-tag">Synchronization</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs text-navy-600">
+          <span class="flex items-center gap-1.5"><iconify-icon icon="lucide:cpu" width="12"></iconify-icon>Producer-Consumer</span>
+          <span class="flex items-center gap-1.5"><iconify-icon icon="lucide:lock" width="12"></iconify-icon>Thread-Safe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EDUCATION ========== -->
+<section id="education" class="py-24 md:py-32 relative z-10">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <div class="reveal flex items-center justify-center gap-3 mb-3">
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+        <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Education</span>
+        <div class="w-10 h-[1px] bg-gold-400/40"></div>
+      </div>
+      <h2 class="reveal text-3xl md:text-5xl font-bold tracking-tight text-white font-serif" style="transition-delay:.1s">
+        Academic <span class="gold-gradient">Journey</span>
+      </h2>
+    </div>
+
+    <div class="relative pl-10">
+      <div class="tl-line"></div>
+      <!-- MCA -->
+      <div class="reveal relative mb-10" style="transition-delay:.2s">
+        <div class="tl-dot"></div>
+        <div class="tilt-card glass box-gold box-gold-hover rounded-2xl p-6" data-hover>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
+            <div>
+              <h3 class="text-base font-semibold text-white font-serif">MCA — Master of Computer Applications</h3>
+              <p class="text-sm text-gold-400/80">Sheshadripuram College, Bengaluru</p>
+            </div>
+            <div class="mt-2 sm:mt-0 flex items-center gap-2">
+              <span class="px-3 py-1 rounded-lg bg-gold-400/10 border border-gold-400/20 text-xs font-mono font-medium text-gold-300">CGPA: 7.8</span>
+              <span class="text-navy-600 text-xs">Dec 2024 – Present</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-400">OOP with Java</span>
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-400">Database Management</span>
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-400">Computer Networks</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2"><span class="live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <span class="text-[10px] text-emerald-400/80 font-medium">Currently Pursuing</span>
+          </div>
+        </div>
+      </div>
+      <!-- BCA -->
+      <div class="reveal relative" style="transition-delay:.3s">
+        <div class="tl-dot" style="background:#7a8599;box-shadow:0 0 10px rgba(122,133,153,0.3)"></div>
+        <div class="tilt-card glass box-gold box-gold-hover rounded-2xl p-6" data-hover>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
+            <div>
+              <h3 class="text-base font-semibold text-white font-serif">BCA — Bachelor of Computer Applications</h3>
+              <p class="text-sm text-navy-400">Christ College, Rajkot, Gujarat</p>
+            </div>
+            <div class="mt-2 sm:mt-0 flex items-center gap-2">
+              <span class="px-3 py-1 rounded-lg bg-navy-800/50 border border-navy-700 text-xs font-mono text-navy-400">CGPA: 7.8</span>
+              <span class="text-navy-600 text-xs">Apr 2021 – Apr 2024</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-500">Data Structures</span>
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-500">Programming Fundamentals</span>
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-500">Web Technologies</span>
+            <span class="px-2.5 py-1 rounded-md bg-navy-800/50 text-[10px] font-mono text-navy-500">Operating Systems</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CERTIFICATIONS & EXTRAS ========== -->
+<section class="py-24 md:py-32 relative z-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Certifications -->
+      <div class="reveal-left">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-[1px] bg-gold-400/40"></div>
+          <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Certifications</span>
+        </div>
+        <div class="space-y-3">
+          <div class="glass box-gold box-gold-hover rounded-xl p-5 flex items-center gap-4 group" data-hover>
+            <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:award" width="18" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-white">Fundamentals of Java</h4>
+              <p class="text-xs text-navy-500 mt-0.5">Coursera · Feb – May 2025</p>
+            </div>
+          </div>
+          <div class="glass box-gold box-gold-hover rounded-xl p-5 flex items-center gap-4 group" data-hover>
+            <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:award" width="18" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-white">DSA & Backend of Java</h4>
+              <p class="text-xs text-navy-500 mt-0.5">Coursera · May – Jul 2025</p>
+            </div>
+          </div>
+          <div class="glass box-gold box-gold-hover rounded-xl p-5 flex items-center gap-4 group" data-hover>
+            <div class="w-10 h-10 rounded-xl bg-gold-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:award" width="18" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-white">Basics of Spring Boot</h4>
+              <p class="text-xs text-navy-500 mt-0.5">Coursera · Oct 2025 – Jan 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extras -->
+      <div class="reveal-right">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-[1px] bg-gold-400/40"></div>
+          <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Beyond Code</span>
+        </div>
+        <div class="glass box-gold rounded-2xl p-6 h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <iconify-icon icon="lucide:flame" width="18" class="text-gold-400"></iconify-icon>
+              <span class="text-sm font-medium text-white">LeetCode Daily Practice</span>
+            </div>
+            <div class="grid grid-cols-14 gap-[3px] mb-2" id="streakGrid" style="grid-template-columns:repeat(14,1fr)"></div>
+            <p class="text-[10px] text-navy-600 mb-6">Consistent daily problem solving</p>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded-md bg-gold-400/[0.06] flex items-center justify-center"><iconify-icon icon="lucide:hash" width="12" class="text-gold-400/60"></iconify-icon></div>
+                <span class="text-sm text-navy-400 font-light">Arrays, Strings, Stacks, Queues, Recursion</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded-md bg-gold-400/[0.06] flex items-center justify-center"><iconify-icon icon="lucide:globe" width="12" class="text-gold-400/60"></iconify-icon></div>
+                <span class="text-sm text-navy-400 font-light">English, Hindi, Gujarati</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-gold-400/[0.04] to-gold-400/[0.02] border border-gold-400/10">
+            <div class="flex items-center gap-2 mb-1">
+              <iconify-icon icon="lucide:target" width="14" class="text-gold-400"></iconify-icon>
+              <span class="text-xs font-medium text-gold-300">Currently Focused On</span>
+            </div>
+            <p class="text-xs text-navy-500 font-light">System Design, Advanced Kafka Patterns, and Scaling Microservices</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT (HIGHLIGHTED) ========== -->
+<section id="contact" class="py-24 md:py-32 relative z-10 section-accent">
+  <div class="absolute w-[500px] h-[500px] rounded-full bg-gold-400/[0.03] blur-[160px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+  <div class="max-w-3xl mx-auto px-6 text-center relative">
+    <div class="reveal flex items-center justify-center gap-3 mb-3">
+      <div class="w-10 h-[1px] bg-gold-400/40"></div>
+      <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 font-semibold">Get In Touch</span>
+      <div class="w-10 h-[1px] bg-gold-400/40"></div>
+    </div>
+    <h2 class="reveal text-3xl md:text-5xl font-bold tracking-tight text-white mb-3 font-serif" style="transition-delay:.1s">
+      Let's <span class="gold-gradient">Connect</span>
+    </h2>
+    <p class="reveal text-navy-400 text-sm mb-12 font-light" style="transition-delay:.2s">
+      Looking for a backend intern who ships production-grade microservices? Let's talk.
+    </p>
+
+    <div class="reveal-scale" style="transition-delay:.3s">
+      <div class="glass box-gold rounded-2xl p-8 md:p-10">
+        <div class="grid sm:grid-cols-3 gap-4 mb-8">
+          <a href="mailto:thesiakaran@gmail.com" class="group flex flex-col items-center gap-3 p-5 rounded-xl bg-navy-900/30 border border-gold-400/[0.06] hover:border-gold-400/20 hover:bg-gold-400/[0.04] transition-all" data-hover>
+            <div class="w-11 h-11 rounded-xl bg-gold-400/10 flex items-center justify-center group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:mail" width="20" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <div class="text-[9px] uppercase tracking-widest text-navy-600 mb-0.5 font-semibold">Email</div>
+              <div class="text-[11px] text-navy-300 font-mono">thesiakaran@gmail.com</div>
+            </div>
+          </a>
+          <a href="tel:+919054055914" class="group flex flex-col items-center gap-3 p-5 rounded-xl bg-navy-900/30 border border-gold-400/[0.06] hover:border-gold-400/20 hover:bg-gold-400/[0.04] transition-all" data-hover>
+            <div class="w-11 h-11 rounded-xl bg-gold-400/10 flex items-center justify-center group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:phone" width="20" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <div class="text-[9px] uppercase tracking-widest text-navy-600 mb-0.5 font-semibold">Phone</div>
+              <div class="text-[11px] text-navy-300 font-mono">+91 9054055914</div>
+            </div>
+          </a>
+          <a href="https://linkedin.com/in/karan-thesia-b45703346" target="_blank" class="group flex flex-col items-center gap-3 p-5 rounded-xl bg-navy-900/30 border border-gold-400/[0.06] hover:border-gold-400/20 hover:bg-gold-400/[0.04] transition-all" data-hover>
+            <div class="w-11 h-11 rounded-xl bg-gold-400/10 flex items-center justify-center group-hover:bg-gold-400/15 transition-colors">
+              <iconify-icon icon="lucide:linkedin" width="20" class="text-gold-400"></iconify-icon>
+            </div>
+            <div>
+              <div class="text-[9px] uppercase tracking-widest text-navy-600 mb-0.5 font-semibold">LinkedIn</div>
+              <div class="text-[11px] text-navy-300 font-mono">karan-thesia</div>
+            </div>
+          </a>
+        </div>
+        <div class="flex items-center justify-center gap-2 text-navy-600 text-xs">
+          <iconify-icon icon="lucide:map-pin" width="12"></iconify-icon>
+          <span>Bengaluru, India</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="py-8 border-t border-gold-400/[0.06] relative z-10">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2.5">
+      <div class="w-6 h-6 rounded-md bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-bold text-[9px]">T</div>
+      <span class="text-xs text-navy-600 font-light">© 2025 Thesia Karan. Crafted with precision.</span>
+    </div>
+    <div class="flex items-center gap-5">
+      <a href="https://linkedin.com/in/karan-thesia-b45703346" target="_blank" class="text-navy-600 hover:text-gold-400 transition-colors" data-hover><iconify-icon icon="lucide:linkedin" width="15"></iconify-icon></a>
+      <a href="mailto:thesiakaran@gmail.com" class="text-navy-600 hover:text-gold-400 transition-colors" data-hover><iconify-icon icon="lucide:mail" width="15"></iconify-icon></a>
+      <a href="https://github.com" target="_blank" class="text-navy-600 hover:text-gold-400 transition-colors" data-hover><iconify-icon icon="lucide:github" width="15"></iconify-icon></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cD=document.getElementById('cDot'),cR=document.getElementById('cRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cD.style.left=mx-3+'px';cD.style.top=my-3+'px'});
+!function aR(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cR.style.left=rx-18+'px';cR.style.top=ry-18+'px';requestAnimationFrame(aR)}();
+document.querySelectorAll('[data-hover]').forEach(e=>{e.addEventListener('mouseenter',()=>cR.classList.add('hover'));e.addEventListener('mouseleave',()=>cR.classList.remove('hover'))});
+
+// Particles
+const pc=document.getElementById('ptcls');
+for(let i=0;i<25;i++){const p=document.createElement('div');p.classList.add('ptcl');p.style.left=Math.random()*100+'%';p.style.top=(Math.random()*100+100)+'%';p.style.animationDuration=(10+Math.random()*15)+'s';p.style.animationDelay=(Math.random()*12)+'s';pc.appendChild(p)}
+
+// Typing
+const ts=['Java Backend Developer','Spring Boot Enthusiast','Microservices Architect','Kafka Event-Driven Builder','DSA Problem Solver','MCA Student 2026'];
+let ti=0,ci=0,dl=false;const te=document.getElementById('typeEl');
+function tw(){const c=ts[ti];if(!dl){te.textContent=c.substring(0,ci+1);ci++;if(ci===c.length){dl=true;setTimeout(tw,2200);return}setTimeout(tw,55)}else{te.textContent=c.substring(0,ci-1);ci--;if(ci===0){dl=false;ti=(ti+1)%ts.length;setTimeout(tw,350);return}setTimeout(tw,25)}}tw();
+
+// Reveal
+const rO=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('active');en.target.querySelectorAll('.skill-fill').forEach(b=>setTimeout(()=>b.classList.add('animated'),300))}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(e=>rO.observe(e));
+
+// Nav
+const nb=document.getElementById('nav');
+window.addEventListener('scroll',()=>{if(window.scrollY>80){nb.style.background='rgba(6,9,18,0.85)';nb.style.backdropFilter='blur(20px)';nb.style.borderBottom='1px solid rgba(212,168,83,0.06)'}else{nb.style.background='transparent';nb.style.backdropFilter='none';nb.style.borderBottom='none'}});
+const ss=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{let c='';ss.forEach(s=>{if(window.scrollY>=s.offsetTop-200)c=s.id});document.querySelectorAll('.nav-link').forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+c)})});
+
+// Mobile menu
+document.getElementById('mobBtn').addEventListener('click',()=>document.getElementById('mobMenu').classList.toggle('hidden'));
+document.querySelectorAll('.ml').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobMenu').classList.add('hidden')));
+
+// 3D Tilt
+document.querySelectorAll('.tilt-card').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--rx',((e.clientY-r.top-r.height/2)/r.height*-5)+'deg');c.style.setProperty('--ry',((e.clientX-r.left-r.width/2)/r.width*5)+'deg')});c.addEventListener('mouseleave',()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')})});
+
+// Stats
+const sO=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){const el=en.target,t=parseInt(el.dataset.target);let c=0;const s=Math.ceil(t/25);const iv=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(iv)}el.textContent=c+(t>=10?'+':'')},50);sO.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.stat-num').forEach(e=>sO.observe(e));
+
+// Streak grid
+const sg=document.getElementById('streakGrid');
+for(let i=0;i<56;i++){const d=document.createElement('div');const r=Math.random();d.className='aspect-square rounded-[2px]';d.style.background=r<.1?'rgba(212,168,83,0.04)':r<.35?'rgba(212,168,83,0.12)':r<.65?'rgba(212,168,83,0.25)':r<.88?'rgba(212,168,83,0.4)':'rgba(212,168,83,0.65)';sg.appendChild(d)}
+</script>
+</body>
+</html>

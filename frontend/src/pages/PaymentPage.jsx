@@ -1,17 +1,84 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import api from '../api/api';
 import { useCart } from '../context/CartContext';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+function StripeCheckoutForm({ cartTotal, deliveryCharge, shipping, onSuccess }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setLoading(true);
+    setError(null);
+
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setError(submitError.message);
+      setLoading(false);
+      return;
+    }
+
+    const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: 'if_required'
+    });
+
+    if (stripeError) {
+      setError(stripeError.message);
+      setLoading(false);
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+      onSuccess();
+    } else {
+      setError('Unexpected state');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <PaymentElement />
+      {error && <div className="error-msg" style={{color: 'red', marginTop: '8px'}}>⚠ {error}</div>}
+      <button disabled={!stripe || loading} className="btn btn-accent btn-lg" type="submit" style={{ width: '100%' }}>
+        {loading ? 'Processing Secure Payment...' : `Pay ₹${(cartTotal + deliveryCharge).toLocaleString('en-IN')}`}
+      </button>
+    </form>
+  );
+}
 
 export default function PaymentPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { cartTotal, clearCart } = useCart();
   const shipping = location.state?.shipping;
-  const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [paymentMethod, setPaymentMethod] = useState('CARD');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
   const deliveryCharge = cartTotal < 999 ? 49 : 0;
+
+  useEffect(() => {
+    if (paymentMethod === 'CARD' && cartTotal > 0) {
+      // Pointing to the Vercel Serverless Function instead of Spring Boot
+      api.post('/api/create-payment-intent', {
+        amount: (cartTotal + deliveryCharge) * 100, // Stripe expects amount in paise
+        currency: 'inr'
+      }).then(res => {
+        setClientSecret(res.data.clientSecret);
+      }).catch(err => {
+        console.error(err);
+        setError('Failed to initialize payment gateway.');
+      });
+    }
+  }, [paymentMethod, cartTotal, deliveryCharge]);
 
   if (!shipping) return (
     <div className="page" style={{ paddingTop: '32px', textAlign: 'center' }}>
@@ -29,13 +96,12 @@ export default function PaymentPage() {
       navigate('/confirmation', { state: { order: res.data } });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to place order');
-    } finally {
       setLoading(false);
     }
   };
 
   const methods = [
-    { key: 'CARD', icon: '💳', title: 'Pay with Card', desc: 'Mock payment — always succeeds', badge: 'PAID instantly' },
+    { key: 'CARD', icon: '💳', title: 'Pay with Card', desc: 'Secure payment via Stripe', badge: 'Stripe' },
     { key: 'COD', icon: '📦', title: 'Cash on Delivery', desc: 'Pay when you receive your order', badge: 'Pay later' },
   ];
 
@@ -70,9 +136,26 @@ export default function PaymentPage() {
 
         {error && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', borderRadius: 'var(--radius)' }}><p className="error-msg" style={{ margin: 0 }}>⚠ {error}</p></div>}
 
-        <button onClick={handlePlaceOrder} disabled={loading} className="btn btn-accent btn-lg" style={{ width: '100%' }}>
-          {loading ? 'Placing Order...' : `Place Order — ₹${(cartTotal + deliveryCharge).toLocaleString('en-IN')}`}
-        </button>
+        {paymentMethod === 'CARD' ? (
+          clientSecret ? (
+            <div className="card" style={{ padding: '24px', marginTop: '16px' }}>
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <StripeCheckoutForm 
+                  cartTotal={cartTotal} 
+                  deliveryCharge={deliveryCharge}
+                  shipping={shipping}
+                  onSuccess={handlePlaceOrder}
+                />
+              </Elements>
+            </div>
+          ) : (
+            <div style={{ padding: '24px', textAlign: 'center' }}>Loading secure payment gateway...</div>
+          )
+        ) : (
+          <button onClick={handlePlaceOrder} disabled={loading} className="btn btn-accent btn-lg" style={{ width: '100%', marginTop: '16px' }}>
+            {loading ? 'Placing Order...' : `Place Order — ₹${(cartTotal + deliveryCharge).toLocaleString('en-IN')}`}
+          </button>
+        )}
       </div>
     </div>
   );

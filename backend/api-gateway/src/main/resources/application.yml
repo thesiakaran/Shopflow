@@ -37,7 +37,7 @@ spring:
         - id: cart-order-service
           uri: http://${CART_SERVICE_HOST:127.0.0.1}:8083
           predicates:
-            - Path=/api/cart/**, /api/orders/**
+            - Path=/api/cart/**, /api/orders/**, /api/payments/**
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
 

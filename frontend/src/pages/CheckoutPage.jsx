@@ -36,7 +36,7 @@ export default function CheckoutPage() {
           {error && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', borderRadius: 'var(--radius)', marginBottom: '16px' }}><p className="error-msg" style={{ margin: 0 }}>⚠ {error}</p></div>}
           <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div style={{ gridColumn: '1/-1' }}><label>Full Name</label><input className="input" value={form.shippingName} onChange={e => setForm({...form, shippingName: e.target.value})} required placeholder="Recipient name" /></div>
-            <div><label>Phone</label><input className="input" type="tel" value={form.shippingPhone} onChange={e => setForm({...form, shippingPhone: e.target.value})} required placeholder="10-digit" pattern="[0-9]{10}" /></div>
+            <div><label>Phone</label><input className="input" type="tel" value={form.shippingPhone} onChange={e => setForm({...form, shippingPhone: e.target.value.replace(/\\D/g, '').slice(0, 10)})} required placeholder="10-digit" pattern="[0-9]{10}" /></div>
             <div><label>Pincode</label><input className="input" value={form.shippingPincode} onChange={e => setForm({...form, shippingPincode: e.target.value})} required placeholder="6-digit" pattern="[0-9]{6}" /></div>
             <div style={{ gridColumn: '1/-1' }}><label>Address</label><input className="input" value={form.shippingAddress} onChange={e => setForm({...form, shippingAddress: e.target.value})} required placeholder="House no, Street, Area" /></div>
             <div><label>City</label><input className="input" value={form.shippingCity} onChange={e => setForm({...form, shippingCity: e.target.value})} required placeholder="City" /></div>
