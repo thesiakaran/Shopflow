@@ -2,7 +2,7 @@
 
 **ShopFlow** is an enterprise-grade Microservices E-Commerce Application. 
 
-🔗 **Live Demo (Mock Mode):** [https://shopflow-mauve.vercel.app/](https://shopflow-mauve.vercel.app/)
+🔗 **Live Demo :** [https://shopflow-mauve.vercel.app/](https://shopflow-mauve.vercel.app/)
 
 ## Architecture Overview
 * **Frontend:** Built with **React.js** and **Vite**. Features a fully functional mock-mode for serverless deployments.
